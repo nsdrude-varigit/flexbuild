@@ -7,6 +7,7 @@
 
 include imx_mkimage.mk
 
+UBOOT_INITIAL_ENV = "u-boot-initial-env"
 
 uboot u-boot:
 	@$(call repo-mngr,fetch,uboot,bsp) && \
@@ -79,5 +80,9 @@ define build-uboot-target
 	else \
 	    cp $$opdir/$$srcbin $(FBOUTDIR)/bsp/u-boot/$$brd/$$tgtbin ; \
 	fi && \
+	$(MAKE) -C $(BSPDIR)/uboot -j$(JOBS) O=$$opdir u-boot-initial-env && \
+	set -x && \
+	cd $$opdir && \
+	cp $(UBOOT_INITIAL_ENV) $(DESTDIR)/etc/ && \
 	$(call fbprint_d,"u-boot for $$brd in $(FBOUTDIR)/bsp/u-boot/$$brd");
 endef

@@ -40,6 +40,10 @@ linux:
 	    sed -i 's/# CONFIG_CPU_BIG_ENDIAN is not set/CONFIG_CPU_BIG_ENDIAN=y/' $$opdir/.config; \
 	    echo Big-Endian enabled!; \
 	fi && \
+	if [ -n "$(LINUX_VERSION_EXTENSION)" ]; then \
+		sed -i 's/CONFIG_LOCALVERSION=""/CONFIG_LOCALVERSION=$(LINUX_VERSION_EXTENSION)/' $$opdir/.config && \
+		echo "Linux version extension is set!"; \
+	fi && \
 	$(MAKE) -j$(JOBS) all -C $(KERNEL_PATH) O=$$opdir && \
 	if [ $(DESTARCH) = arm32 ]; then \
 	    $(MAKE) -j$(JOBS) uImage LOADADDR=80008000 -C $(KERNEL_PATH) O=$$opdir; \
@@ -56,7 +60,9 @@ linux:
 	fi && \
 	$(MAKE) -j$(JOBS) modules -C $(KERNEL_PATH) O=$$opdir && \
 	$(MAKE) -j$(JOBS) modules_install INSTALL_MOD_PATH=$$opdir/tmp -C $(KERNEL_PATH) O=$$opdir && \
-	ls $$opdir/arch/$$locarch/boot/dts/$$dtbstr | xargs -I {} cp {} $(FBOUTDIR)/linux/$(KERNEL_TREE)/$(DESTARCH)/$(SOCFAMILY) && \
+	for dtb in $(KERNEL_DEVICETREE); do \
+		cp $$opdir/arch/$(DESTARCH)/boot/dts/$$dtb $(FBOUTDIR)/linux/$(KERNEL_TREE)/$(DESTARCH)/$(SOCFAMILY); \
+	done; \
 	ls -l $(FBOUTDIR)/linux/$(KERNEL_TREE)/$(DESTARCH)/$(SOCFAMILY) && \
 	$(call fbprint_d,"$(KERNEL_TREE) $$curbrch in $(FBOUTDIR)/linux/$(KERNEL_TREE)/$(DESTARCH)/$(SOCFAMILY)")
 
