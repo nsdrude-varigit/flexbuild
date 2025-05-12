@@ -1,0 +1,17 @@
+name: Git Push Workflow Actions
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+jobs:
+  build-flexbuild:
+    uses: varigit-dev/action-workflows/.github/workflows/flexbuild.yml@dev_flexbuild
+    with:
+      flexbuild-ref: ${{ github.sha }}
+      debian-version: 12
+      debian-version-name: bookworm
+    secrets:
+      DO_SPACES_KEY:     ${{ secrets.DO_SPACES_KEY }}
+      DO_SPACES_SECRET:  ${{ secrets.DO_SPACES_SECRET }}
+      DO_SPACES_ENDPOINT: ${{ secrets.DO_SPACES_ENDPOINT }}
