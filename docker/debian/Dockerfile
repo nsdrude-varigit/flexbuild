@@ -30,3 +30,6 @@ RUN apt-get update && apt-get install -y \
 	parted rpm2cpio lsb-release xutils-dev libwayland-bin cmake locales texinfo gawk \
 	chrpath diffstat scons libgflags-dev libhdf5-serial-dev python3-numpy python3-wheel \
 	python3-h5py
+
+    RUN apt-get update && apt-get install -y \
+        lz4 udev bmap-tools genimage

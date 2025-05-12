@@ -37,10 +37,13 @@ Most used example with separate command:
  bld apps -r debian:server -p LS # compile NXP-specific components against the runtime dependencies of Debian Server rootfs for LS machines
  bld ml [ -r <type> ]            # compile NXP-specific eIQ AI/ML components against the library dependencies of Debian rootfs
  bld merge-apps [ -r <type> ]    # merge NXP-specific components into target Debian rootfs (Desktop by default,add '-r debian:server' for Server)
+ bld merge-bootpart-rfs [ -r <type> ]    # merge boot files components into target Debian rootfs (Desktop by default,add '-r debian:server' for Server)
+ bld create_recovery_sdcard_image # Create Variscite recovery sd card (IMAGE_SIZE=5G IMAGE_NAME=example.img)
  bld packrfs [ -r <type> ]       # pack and compress target rootfs as rootfs_xx.tar.zst (or add '-r debian:server' for Server)
  bld packapps [ -r <type> ]      # pack and compress target app components as apps_xx.tar.zst (add '-p LS' for Layerscape platforms)
  bld repo-fetch [ <component> ]  # fetch git repository of all or specified component from remote repos if not exist locally
  bld docker                      # create or attach docker container to build in docker
+ bld docker-clean                # stop and remove the docker container
  bld clean                       # clean all obsolete firmware/linux/apps binary images except distro rootfs
  bld clean-apps [ -r <type> ]    # clean the obsolete NXP-specific apps components binary images
  bld clean-rfs [ -r <type> ]     # clean target debian-based server arm64 rootfs
@@ -316,6 +319,113 @@ convert_rfs_raw_to_ext4() {
     fbprint_d $rfsname.gz
 }
 
+create_recovery_sdcard_image_add_installer() {
+	ROOTFS_DIR="$1"
+	FLASH_BIN="$2"
+	ROOTFS_FILE="$3"
+
+	# Validate positional arguments: ROOTFS_DIR, FLASH_BIN, ROOTFS_FILE
+	for varname in ROOTFS_DIR FLASH_BIN ROOTFS_FILE; do
+		if [[ -z "${!varname}" ]]; then
+			echo "$0 Error: Required argument $varname is missing." >&2
+			return 1
+		fi
+	done
+
+	# Validate required environment variables
+	for varname in \
+		INSTALL_DEBIAN_SCRIPT \
+		INSTALL_DEBIAN_TARGET_BOOT \
+		INSTALL_DEBIAN_TARGET_ROOTFS
+	do
+		if [[ -z "${!varname}" ]]; then
+			echo "$0 Error: Required environment variable $varname is not set." >&2
+			return 1
+		fi
+	done
+
+	# Prepare required directories inside the root filesystem
+	mkdir -p "$ROOTFS_DIR/usr/bin"
+	mkdir -p "$ROOTFS_DIR/opt/images/Debian"
+
+	# Download the installer script and helper, then make executable
+	curl -fsSL "$INSTALL_DEBIAN_SCRIPT" -o "$ROOTFS_DIR/usr/bin/install_debian.sh" || {
+		echo "Error: Failed to fetch installer script." >&2
+		return 1
+	}
+	curl -fsSL "$INSTALL_DEBIAN_ECHOS" -o "$ROOTFS_DIR/usr/bin/echos.sh" || {
+		echo "Error: Failed to fetch echos script." >&2
+		return 1
+	}
+	chmod +x "$ROOTFS_DIR/usr/bin/install_debian.sh"
+
+	# Replace Yocto path with Debian in the installer script
+	if ! sed -i 's|^IMGS_PATH=/opt/images/Yocto|IMGS_PATH=/opt/images/Debian|' "$ROOTFS_DIR/usr/bin/install_debian.sh"; then
+		echo "Error: Failed to update IMGS_PATH in install_debian.sh" >&2
+		return 1
+	fi
+
+	# Copy bootloader and rootfs files to image directory
+	cp "$FLASH_BIN" "$ROOTFS_DIR/opt/images/Debian/${INSTALL_DEBIAN_TARGET_BOOT}"
+	cp "$ROOTFS_FILE" "$ROOTFS_DIR/opt/images/Debian/${INSTALL_DEBIAN_TARGET_ROOTFS}"
+}
+
+create_recovery_sdcard_image() {
+	. $FBDIR/configs/board/$MACHINE.conf
+
+	# Get paths to input rootfs
+	ROOTFS_NAME="${RFSDIR##*/}"
+	ROOTFS_ARCHIVE="$FBOUTDIR/images/${ROOTFS_NAME}.tar.zst"
+
+	# Get paths to Output image
+	IMAGE_NAME="${IMAGE_NAME:-var-recovery-image-${MACHINE}.img}"
+	IMAGE_PATH="$FBOUTDIR/images/${IMAGE_NAME}"
+
+	# Don't overwrite existing images
+	if compgen -G "${IMAGE_PATH}*" > /dev/null; then
+	echo "Error: the following files may be overwritten:" >&2
+	ls -lh ${IMAGE_PATH}*
+	exit 1
+	fi
+
+	# Extract the rootfs to a temporary directory
+	RECOVERY_SDCARD_RFSDIR=$(mktemp -d "$RFSDIR/../${IMAGE_NAME}.tmp-XXXXXX")
+	tar -I zstd -xpf "${ROOTFS_ARCHIVE}" -C "$RECOVERY_SDCARD_RFSDIR"
+
+	# Add installation files to the temporary directory
+	create_recovery_sdcard_image_add_installer "$RECOVERY_SDCARD_RFSDIR" "$FLASH_BIN" "$ROOTFS_ARCHIVE"
+
+	# Generate the Recovery SD‑card Image with genimage
+	GENIMAGE_CFG_FILE=$(mktemp)
+	. $GENIMAGE_CFG
+	printf '%s\n' "$RECOVERY_SD_GENIMAGE_CFG" > "$GENIMAGE_CFG_FILE"
+	genimage \
+		--rootpath   "$WORKDIR/rootfs" \
+		--inputpath  "$WORKDIR" \
+		--outputpath "$FBOUTDIR/images" \
+		--config     "$GENIMAGE_CFG_FILE"
+
+	# Cleanup
+	rm -rf $GENIMAGE_CFG_FILE $RECOVERY_SDCARD_RFSDIR
+	mv $FBOUTDIR/images/recovery-sd.img $IMAGE_PATH
+
+	# Create final image archive and bmap file
+	bmaptool create "$IMAGE_PATH" > "${IMAGE_PATH}.bmap"
+	echo "Compressing final image..."
+	zstd --rm "$IMAGE_PATH" -o "${IMAGE_PATH}.zst"
+
+	# Print final instructions
+	echo "Created ${IMAGE_PATH}.zst and ${IMAGE_PATH}.bmap"
+	echo
+	echo "To flash the image:"
+	echo "  Using bmaptool (recommended):"
+	echo "    sudo bmaptool copy ${IMAGE_PATH}.zst /dev/sdX"
+	echo
+	echo "  Using dd (slower, writes entire image):"
+	echo "    zstdcat ${IMAGE_PATH}.zst | sudo dd of=/dev/sdX bs=1M status=progress conv=fsync"
+	echo
+	echo "Replace /dev/sdX with your SD card device."
+}
 
 pack_distro_rfs() {
     [ -f $RFSDIR/etc/buildinfo ] || { fbprint_e "$RFSDIR is incomplete"; exit; }
@@ -370,6 +480,17 @@ merge_apps() {
     fbprint_d "merge apps to $RFSDIR"
 }
 
+merge_bootpart_rfs() {
+    fbprint_n "Generating rootfs without boot partition..."
+    generate_bootpartition
+    rm -rf $RFSDIR/lib/modules
+    cp -r $bootpartdir/* $RFSDIR/boot/
+    cp -r $RFSDIR/boot/firmware/* $RFSDIR/lib/firmware
+    cp -r $RFSDIR/boot/modules $RFSDIR/lib/modules
+    rm -r $RFSDIR/boot/firmware $RFSDIR/boot/modules
+    pack_distro_rfs
+}
+
 
 check_component_valid() {
     if ! echo $APPS_REPO_LIST utils security networking graphics multimedia connectivity ml gopoint robotics | grep -q $1 && \
@@ -409,6 +530,7 @@ flexbuild_launch_docker() {
 	docker run -t -i -h fbdebian --name="$containername" --privileged=true --net=host \
 	       -v $HOME:$HOME -v $FBDIR:$FBDIR -v /lib/modules:/lib/modules -v /dev:/dev \
 	       -v /etc/localtime:/etc/localtime:ro \
+	       --add-host=fbdebian:127.0.0.1 \
 	       -w $FBDIR fbdebian:${DEBIAN_VERSION} /bin/bash
     elif docker ps -a | grep $containername | grep -q Exited; then
 	docker start $containername
@@ -802,6 +924,7 @@ export CONFIGLIST CFGLISTYML
 . $FBDIR/tools/distro_poky
 . $FBDIR/tools/distro_buildroot
 . $FBDIR/configs/debian/extra_packages_list
+. $FBDIR/configs/debian/extra_packages_list_backport
 
 [ -z "$MACHINE" ] && MACHINE=all
 [ "${MACHINE:0:7}" = "ls1021a" ] && DESTARCH=arm32
@@ -958,9 +1081,6 @@ if [ ! -f $FBDIR/logs/.checkproxydone ]; then
 	    exit
 	fi
     fi
-    if ! grep -q fbdebian /etc/hosts; then
-	echo 127.0.0.1   fbdebian | sudo tee -a /etc/hosts 1>/dev/null
-    fi
     check_proxy && touch $FBDIR/logs/.checkproxydone
 fi
 
@@ -974,6 +1094,13 @@ if [ "$1" = docker ]; then
     [ $HOSTARCH = x86_64 -o $HOSTARCH = i686 ] && check_binfmt_qemu
     [ ! -b /dev/loop0 ] && sudo losetup -f
     flexbuild_launch_docker; exit
+elif [ "$1" = docker-clean ]; then
+	echo "Stopping containers based on fbdebian:*..."
+	docker ps -a --format "{{.ID}} {{.Image}}" | grep '^.* fbdebian:' | awk '{print $1}' | xargs -r docker stop
+	echo "Removing containers based on fbdebian:*..."
+	docker ps -a --format "{{.ID}} {{.Image}}" | grep '^.* fbdebian:' | awk '{print $1}' | xargs -r docker rm
+	echo "Done"
+	exit
 elif [ "$1" = connect ]; then
     host_connect_target $2 $3; exit
 elif [ "$1" = disconnect ]; then
@@ -1123,6 +1250,10 @@ case "$1" in
 	do_clean; exit;;
     merge-apps)
 	merge_apps; exit;;
+    merge-bootpart-rfs)
+	merge_bootpart_rfs; exit;;
+    create-recovery-sdcard-image)
+	create_recovery_sdcard_image; exit;;
     host-dep)
 	check_host_dependent_pkg; exit;;
     list)

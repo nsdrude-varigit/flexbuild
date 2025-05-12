@@ -1,0 +1,106 @@
+#!/usr/bin/env -S bash
+
+# Script to create bootable SD card with:
+# - flash.bin written at 33K offset (seek=33)
+# - Single ext4 root filesystem
+# - Files extracted from tar.zst archive
+
+set -e
+
+show_usage() {
+    echo "Usage: $0 <flash.bin> <rootfs.tar.zst> <sd_device>"
+    echo "Example: $0 flash.bin rootfs.tar.zst /dev/sdX"
+    echo ""
+    echo "WARNING: This will erase all data on the specified device!"
+    echo "Available devices:"
+    lsblk -d -o NAME,SIZE,MODEL
+    exit 1
+}
+
+# Check arguments
+if [ "$#" -ne 3 ]; then
+    show_usage
+fi
+
+FLASH_BIN=$1
+TAR_FILE=$2
+SD_DEVICE=$3
+
+# Verify dependencies
+command -v zstd >/dev/null 2>&1 || {
+    echo "Error: zstd not installed. Install with:"
+    echo "Debian/Ubuntu: sudo apt install zstd"
+    echo "RHEL/CentOS: sudo yum install zstd"
+    exit 1
+}
+
+# Verify files exist
+for file in "$FLASH_BIN" "$TAR_FILE"; do
+    if [ ! -f "$file" ]; then
+        echo "Error: File '$file' not found!"
+        exit 1
+    fi
+done
+
+# Verify block device
+if [ ! -b "$SD_DEVICE" ]; then
+    echo "Error: Device '$SD_DEVICE' not found or not a block device!"
+    exit 1
+fi
+
+# Confirmation prompt
+echo "================================================"
+echo "WARNING: ALL DATA ON $SD_DEVICE WILL BE ERASED!"
+echo "================================================"
+read -p "Press ENTER to continue or Ctrl+C to cancel..."
+
+# Unmount any existing partitions
+echo "Unmounting existing partitions..."
+for partition in $(ls ${SD_DEVICE}* 2>/dev/null); do
+    if mount | grep -q "$partition"; then
+        echo "Unmounting $partition..."
+        sudo umount "$partition" || true
+    fi
+done
+
+# Create partition table (MBR) and single partition
+echo "Creating partition table..."
+sudo parted "$SD_DEVICE" --script mklabel msdos
+sudo parted "$SD_DEVICE" --script mkpart primary ext4 4MiB 100%
+
+# Write flash.bin at 33K offset (33*1024=33792 bytes)
+echo "Writing flash.bin at 33K offset..."
+sudo dd if="$FLASH_BIN" of="$SD_DEVICE" bs=1K seek=33 conv=fsync,notrunc status=progress
+
+# Format as ext4 filesystem
+echo "Formatting as ext4..."
+sudo mkfs.ext4 -F -L "rootfs" "${SD_DEVICE}1"
+
+# Mount the partition
+echo "Mounting partition..."
+MOUNT_POINT=$(mktemp -d)
+sudo mount "${SD_DEVICE}1" "$MOUNT_POINT"
+
+# Extract root filesystem
+echo "Extracting root filesystem..."
+sudo tar -I zstd -xpf "$TAR_FILE" -C "$MOUNT_POINT" --checkpoint=.1000
+
+# Verify boot files if present
+if [ -d "$MOUNT_POINT/boot" ]; then
+    echo "/boot directory contents:"
+    ls -l "$MOUNT_POINT/boot"
+fi
+
+# Final sync and unmount
+echo "Finalizing..."
+sync
+sudo umount "$MOUNT_POINT"
+rmdir "$MOUNT_POINT"
+
+echo "================================================"
+echo "SD card prepared successfully!"
+echo "U-Boot (flash.bin) written at 33K offset"
+echo "Filesystem: ${SD_DEVICE}1"
+echo "================================================"
+echo "Partition layout:"
+sudo parted "$SD_DEVICE" --script print

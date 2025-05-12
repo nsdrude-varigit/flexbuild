@@ -1,0 +1,184 @@
+#!/usr/bin/env -S bash
+
+# Build Automation Script for Embedded Systems
+# Supports Debian-based root filesystems: debian:base, debian:server, debian:desktop
+
+SCRIPT_NAME=$(basename "$0")
+MACHINE=""
+COMPONENTS=""
+DISTRO=""
+SDK_CONFIG_FILE="sdk-var.yml"
+
+validate_distro() {
+    case "$DISTRO" in
+        "debian:base"|"debian:server"|"debian:desktop")
+            return 0
+            ;;
+        *)
+            echo "Error: Unsupported distribution. Valid options are:"
+            echo "  - debian:base    (minimal Debian installation)"
+            echo "  - debian:server  (Debian with server packages)"
+            echo "  - debian:desktop (Debian with desktop environment)"
+            return 1
+            ;;
+    esac
+}
+
+build_system() {
+    echo "=== BUILD PROCESS STARTED ==="
+    echo "Target Device: $MACHINE"
+    echo "Components: $COMPONENTS"
+    echo "Distribution: $DISTRO"
+    echo "Config File: $SDK_CONFIG_FILE"
+
+    if ! validate_distro; then
+        return 1
+    fi
+
+    for component in $COMPONENTS; do
+        echo "Building $component for $MACHINE..."
+        bld -f "$SDK_CONFIG_FILE" -m "$MACHINE" "$component" || {
+            echo "Error: Failed to build $component"
+            return 1
+        }
+    done
+
+    echo "Building $DISTRO root filesystem..."
+    bld rfs -r "$DISTRO" -f "$SDK_CONFIG_FILE" -m "$MACHINE" || {
+        echo "Error: Root filesystem build failed"
+        return 1
+    }
+
+    echo "Building applications for $DISTRO..."
+    bld apps -r "$DISTRO" -f "$SDK_CONFIG_FILE" -m "$MACHINE" || {
+        echo "Error: Applications build failed"
+        return 1
+    }
+
+    echo "Integrating components..."
+    bld merge-apps -r "$DISTRO" -f "$SDK_CONFIG_FILE" -m "$MACHINE" && \
+    bld merge-bootpart-rfs -r "$DISTRO" -f "$SDK_CONFIG_FILE" -m "$MACHINE" || {
+        echo "Error: System integration failed"
+        return 1
+    }
+
+    echo "Building Recovery SD Card..."
+    bld -r "$DISTRO" -f "$SDK_CONFIG_FILE" -m "$MACHINE" create-recovery-sdcard-image
+
+    echo "BUILD SUCCESSFUL"
+    return 0
+}
+
+clean_system() {
+    echo "=== CLEANUP PROCESS STARTED ==="
+    echo "Cleaning $DISTRO environment..."
+
+    if [ -n "$DISTRO" ]; then
+        BLD_ARGS="-r $DISTRO"
+    fi
+
+    bld clean "$BLD_ARGS"
+    bld clean-linux "$BLD_ARGS"
+    bld clean-rfs "$BLD_ARGS"
+    bld clean-apps "$BLD_ARGS"
+
+    echo "CLEANUP COMPLETED"
+    return 0
+}
+
+cleanall() {
+    echo "=== FULL CLEANUP PROCESS STARTED ==="
+    echo "Cleaning ALL build environments..."
+
+    clean_system
+    git clean -dxf
+    rm -rf components_lsdk2412/ build_lsdk2412/
+
+    . setup.env
+
+    return 0
+}
+
+show_usage() {
+    echo "Usage: $SCRIPT_NAME <machine> <components> <distro> [options]"
+    echo "Options:"
+    echo "  --clean     Clean the specified distribution"
+    echo "  --cleanall  Clean all build environments"
+    echo "  --config    Specify custom config file (default: sdk-var.yml)"
+    echo ""
+    echo "Supported Debian distributions:"
+    echo "  debian:base    - Minimal Debian installation"
+    echo "  debian:server  - Debian with server packages"
+    echo "  debian:desktop - Debian with desktop environment"
+    echo ""
+    echo "Examples:"
+    echo "  $SCRIPT_NAME imx8mm-var-dart debian:desktop \"uboot linux\""
+    echo "  $SCRIPT_NAME imx8mm-var-dart debian:desktop --clean"
+    echo "  $SCRIPT_NAME --cleanall"
+}
+
+parse_arguments() {
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --clean)
+                CLEAN_MODE=true
+                shift
+                ;;
+            --cleanall)
+                CLEANALL_MODE=true
+                shift
+                ;;
+            --config)
+                SDK_CONFIG_FILE="$2"
+                shift 2
+                ;;
+            -h|--help)
+                show_usage
+                exit 0
+                ;;
+            *)
+                if [ -z "$MACHINE" ]; then
+                    MACHINE="$1"
+                elif [ -z "$DISTRO" ]; then
+                    DISTRO="$1"
+                elif [ -z "$COMPONENTS" ]; then
+                    COMPONENTS="$1"
+                else
+                    echo "Error: Unknown argument '$1'"
+                    show_usage
+                    exit 1
+                fi
+                shift
+                ;;
+        esac
+    done
+}
+
+main() {
+    parse_arguments "$@"
+
+    if [ "$CLEANALL_MODE" = true ]; then
+        if ! cleanall; then
+            exit 1
+        fi
+        exit 0
+    fi
+
+    if [ "$CLEAN_MODE" = true ]; then
+        if ! clean_system; then
+            exit 1
+        fi
+        exit 0
+    fi
+
+    if [ -z "$MACHINE" ] || [ -z "$DISTRO" ]; then
+        show_usage
+        exit 1
+    fi
+
+    if ! build_system; then
+        exit 1
+    fi
+}
+
+main "$@"
