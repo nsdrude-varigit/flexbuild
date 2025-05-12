@@ -1,0 +1,19 @@
+# Copyright 2025 Variscite
+#
+# SPDX-License-Identifier: BSD-3-Clause
+
+# To install extra devel packages dependencies needed for compiling NXP-specific
+# packages/components from source code against Debian rootfs libraries/headers
+# during build-time for NXP iMX & Layerscape MPU platforms.
+
+extra_server_devel_packages_backport=" \
+    gpiod \
+    libgpiod-dev \
+    python3-libgpiod \
+"
+
+extra_desktop_devel_packages_backport=" \
+    gpiod \
+    libgpiod-dev \
+    python3-libgpiod \
+"

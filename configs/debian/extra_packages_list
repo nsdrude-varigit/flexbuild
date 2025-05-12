@@ -36,6 +36,9 @@ host_dependent_packages=" \
 
 
 extra_server_devel_packages=" \
+    bc \
+    iperf3 \
+    iw \
     libxml2-dev \
     libtinyxml2-9 \
     libssl-dev \
@@ -95,9 +98,13 @@ extra_server_devel_packages=" \
     libvorbis-dev \
     libjpeg62-turbo-dev \
     libjsoncpp-dev \
+    udhcpd \
 "
 
 extra_desktop_devel_packages=" \
+    bc \
+    iperf3 \
+    iw \
     libcjson-dev \
     libxshmfence-dev \
     x11proto-dev \
