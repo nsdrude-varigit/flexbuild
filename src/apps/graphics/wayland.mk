@@ -4,7 +4,7 @@
 
 
 wayland:
-ifeq ($(CONFIG_WAYLAND),y)
+ifeq ($(strip $(subst ",,$(CONFIG_WAYLAND))),y)
 	@[ $(SOCFAMILY) = LS -a $${MACHINE:0:7} != ls1028a -o \
 	   $(DISTROVARIANT) = base -o $(DISTROVARIANT) = tiny ] && exit || \
 	 $(call fbprint_b,"wayland") && \
@@ -13,6 +13,9 @@ ifeq ($(CONFIG_WAYLAND),y)
 	 export PKG_CONFIG_SYSROOT_DIR=$(RFSDIR) && \
 	 export PKG_CONFIG_LIBDIR=$(DESTDIR)/usr/lib/pkgconfig:$(RFSDIR)/usr/lib/aarch64-linux-gnu/pkgconfig && \
 	 cd $(GRAPHICSDIR)/wayland && \
+	 if [ ! -f .patchdone ]; then \
+	    git am $(FBDIR)/patch/wayland/*.patch && touch .patchdone; \
+	 fi && \
 	 sed -e 's%@TARGET_CROSS@%$(CROSS_COMPILE)%g' -e 's%@TARGET_ARCH@%aarch64%g' \
 	     -e 's%@TARGET_CPU@%cortex-a72%g' -e 's%@TARGET_ENDIAN@%little%g' -e 's%@STAGING_DIR@%$(RFSDIR)%g' \
 	     $(FBDIR)/src/system/meson.cross > meson.cross && \

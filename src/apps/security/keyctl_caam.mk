@@ -4,10 +4,13 @@
 
 
 keyctl_caam:
-ifeq ($(CONFIG_OPENSSL),y)
+ifeq ($(strip $(subst ",,$(CONFIG_OPENSSL))),y)
 	@[ $(DISTROVARIANT) = base -o $(DISTROVARIANT) = tiny ] && exit || \
 	 $(call fbprint_b,"keyctl_caam") && \
 	 $(call repo-mngr,fetch,keyctl_caam,apps/security) && \
+	 if [ ! -d $(DESTDIR)/usr/include/openssl ]; then \
+		bld openssl -r $(DISTROTYPE):$(DISTROVARIANT) -a $(DESTARCH); \
+	 fi && \
 	 cd $(SECDIR)/keyctl_caam && \
 	 export OPENSSL_PATH=$(SECDIR)/openssl && \
 	 $(MAKE) CC=$(CROSS_COMPILE)gcc DESTDIR=$(DESTDIR) install && \

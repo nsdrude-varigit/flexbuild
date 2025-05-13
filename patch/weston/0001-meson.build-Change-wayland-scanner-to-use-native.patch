@@ -1,0 +1,25 @@
+From 241b888e5ad8fcbddaff5e564a5aa277518ec504 Mon Sep 17 00:00:00 2001
+From: rafluan <luan.rafael@ossystems.com.br>
+Date: Fri, 11 Apr 2025 14:25:52 -0300
+Subject: [PATCH] meson.build: Change wayland-scanner to use native
+
+Signed-off-by: rafluan <luan.rafael@ossystems.com.br>
+---
+ protocol/meson.build | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/protocol/meson.build b/protocol/meson.build
+index 84eb8b9b..9a532ca6 100644
+--- a/protocol/meson.build
++++ b/protocol/meson.build
+@@ -1,5 +1,5 @@
+-dep_scanner = dependency('wayland-scanner', native: false)
+-prog_scanner = find_program(dep_scanner.get_variable(pkgconfig: 'wayland_scanner'))
++dep_scanner = dependency('wayland-scanner', native: true)
++prog_scanner = find_program('wayland-scanner', native: true, required: true)
+ 
+ dep_wp = dependency('wayland-protocols', version: '>= 1.31',
+ 	fallback: ['wayland-protocols', 'wayland_protocols'])
+-- 
+2.44.2
+

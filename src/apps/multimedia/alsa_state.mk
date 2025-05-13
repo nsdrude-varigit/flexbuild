@@ -13,4 +13,8 @@ alsa_state:
 	 install -d $(DESTDIR)/var/lib/alsa && \
 	 install -m 0644 $(FBDIR)/src/system/alsa_state/asound.state $(DESTDIR)/var/lib/alsa && \
 	 install -m 0644 $(FBDIR)/src/system/alsa_state/asound.conf $(DESTDIR)/etc && \
+	 SOC_PREFIX=`echo $$MACHINE | cut -c1-4` && \
+	 if [ $$SOC_PREFIX = "imx8" ] || [ $$SOC_PREFIX = "imx9" ]; then \
+	   sed -i 's/pcm "hw:0,0"/pcm "hw:wm8904audio"/g' $(DESTDIR)/etc/asound.conf; \
+	 fi && \
 	 $(call fbprint_d,"alsa_state")

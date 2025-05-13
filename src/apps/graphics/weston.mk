@@ -11,7 +11,7 @@
 # version：12.0.3
 
 weston:
-ifeq ($(CONFIG_WESTON),y)
+ifeq ($(strip $(subst ",,$(CONFIG_WESTON))),y)
 	@[ $(DISTROVARIANT) != desktop ] && exit || \
 	 $(call fbprint_b,"weston") && \
 	 $(call repo-mngr,fetch,weston,apps/graphics) && \
@@ -32,6 +32,9 @@ ifeq ($(CONFIG_WESTON),y)
 	 fi && \
 	 export PKG_CONFIG_LIBDIR=$(RFSDIR)/usr/lib/aarch64-linux-gnu/pkgconfig && \
 	 cd $(GRAPHICSDIR)/weston && \
+	 if [ ! -f .patchdone ]; then \
+		git am $(FBDIR)/patch/weston/*.patch && touch .patchdone; \
+	 fi && \
 	 sed -i 's/0.63/0.61/' meson.build && \
 	 sed -e 's%@TARGET_CROSS@%$(CROSS_COMPILE)%g' -e 's%@STAGING_DIR@%$(RFSDIR)%g' \
 	     -e 's%@DESTDIR@%$(DESTDIR)%g' $(FBDIR)/src/system/meson.cross > meson.cross && \
@@ -71,13 +74,17 @@ ifeq ($(CONFIG_WESTON),y)
 		-Dc_args="-I$(DESTDIR)/usr/include -I$(DESTDIR)/usr/local/include -I$(RFSDIR)/usr/include" \
 		-Dc_link_args="-L$(DESTDIR)/usr/lib -L$(RFSDIR)/lib/aarch64-linux-gnu -lgbm" && \
 	 ninja install -j$(JOBS) -C build_$(DISTROTYPE)_$(ARCH) && \
+	 mkdir -p $(DESTDIR)/etc/systemd/system/sockets.target.wants && \
 	 mkdir -p $(DESTDIR)/etc/xdg/weston $(DESTDIR)/etc/systemd/system/graphical.target.wants $(DESTDIR)/etc/default && \
 	 mkdir -p $(DESTDIR)/usr/share/applications $(DESTDIR)/usr/share/icons/hicolor/48x48/apps $(DESTDIR)/lib/systemd/system && \
 	 cp $(FBDIR)/src/system/weston/weston.ini $(DESTDIR)/etc/xdg/weston/weston.ini && \
 	 install -m 644 $(FBDIR)/src/system/weston/weston $(DESTDIR)/etc/default/weston && \
 	 install -m 644 $(FBDIR)/src/system/weston/weston.service $(DESTDIR)/lib/systemd/system/ && \
 	 ln -sf /lib/systemd/system/weston.service $(DESTDIR)/etc/systemd/system/graphical.target.wants/weston.service && \
-	 install -m 644 $(FBDIR)/patch/weston/weston.png $(DESTDIR)/usr/share/icons/hicolor/48x48/apps/weston.png && \
-	 install -m 644 $(FBDIR)/patch/weston/weston.desktop $(DESTDIR)/usr/share/applications/weston.desktop && \
+	 install -m 644 $(FBDIR)/src/system/weston/weston.socket $(DESTDIR)/lib/systemd/system && \
+	 ln -s /lib/systemd/system/weston.socket $(DESTDIR)/etc/systemd/system/sockets.target.wants/weston.socket && \
+	 install -m 644 $(FBDIR)/src/system/weston/weston.png $(DESTDIR)/usr/share/icons/hicolor/48x48/apps/weston.png && \
+	 install -m 644 $(FBDIR)/src/system/weston/wallpaper.png $(DESTDIR)/usr/share/weston/wallpaper.png && \
+	 install -m 644 $(FBDIR)/src/system/weston/weston.desktop $(DESTDIR)/usr/share/applications/weston.desktop && \
 	 $(call fbprint_d,"weston")
 endif
