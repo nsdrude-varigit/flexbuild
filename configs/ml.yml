@@ -11,32 +11,39 @@ repo:
 
   tflite:
     url:    https://github.com/nxp-imx/tensorflow-imx.git
+    commit: 032564c4cbbc08a942553796f6365c412fc9863c
 
   tflite_vx_delegate:
     url:    https://github.com/nxp-imx/tflite-vx-delegate-imx.git
+    commit: 4277fd719fc1849c3d448d77ac01af1a84dd3bf3
 
   tflite_ethosu_delegate:
     url:    https://github.com/nxp-imx/tflite-ethosu-delegate-imx.git
+    commit: d23886fa1fb5dc9cb2aac00f4bd85d550d33fcdf
 
   ethosu_driver_stack:
     url:    https://github.com/nxp-imx/ethos-u-driver-stack-imx.git
+    commit: a80c51d77c91f1a8266afc5d8056fb981de4b504
 
   ethosu_firmware:
     url:    https://github.com/nxp-imx/ethos-u-firmware.git
+    commit: 3dbedc11bd2a4ba56af9fbe9d285b5bf13f1a088
 
   ethosu_vela:
     url:    https://github.com/nxp-imx/ethos-u-vela.git
+    commit: 135efab5b1a30b08d4dcc075cb8bed2fadc28407
 
   nnstreamer:
     url:    https://github.com/nnstreamer/nnstreamer.git
-    commit: f82789170b8f2696
+    commit: 807060954acfdb6cec130559d00eef1af61457cf
 
   nnstreamer_edge:
     url:    https://github.com/nnstreamer/nnstreamer-edge.git
-    commit: 2efc10afd1161a02
+    commit: 2bf50d57f0f8d856ae38cf82b0a0f3746f46a08a
 
   nnshark:
     url:    https://github.com/nxp-imx/nnshark.git
+    commit: 4ed66906b889e66a6458a1d2692790f64bf1c556
 
   ssat:
     url:    https://github.com/myungjoo/ssat.git
