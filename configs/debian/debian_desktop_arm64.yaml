@@ -22,7 +22,7 @@ mmdebstrap:
     - 'deb http://deb.debian.org/debian bookworm-backports main'
   suite: bookworm
   target: rootfs
-  hostname: localhost
+  hostname: ${MACHINE}
   variant: standard
   components:
     - main
@@ -192,3 +192,5 @@ mmdebstrap:
     - 'printf " * Licensing: https://lsdk.github.io/eula\n" >> $1/etc/update-motd.d/20-help-text'
     - 'printf "NXP Linux SDK 2412 Debian Desktop (optimized with NXP-specific hardware acceleration)\n" >> $1/etc/issue'
     - 'printf "Build: `date --rfc-3339 seconds`\n" >> $1/etc/buildinfo'
+    # Remove polkitd to avoid hostname being set to localhost
+    - 'chroot "$1" apt purge -y polkitd'
