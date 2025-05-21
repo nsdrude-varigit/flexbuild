@@ -10,10 +10,12 @@ extra_server_devel_packages_backport=" \
     gpiod \
     libgpiod-dev \
     python3-libgpiod \
+    python3-venv \
 "
 
 extra_desktop_devel_packages_backport=" \
     gpiod \
     libgpiod-dev \
     python3-libgpiod \
+    python3-venv \
 "

@@ -12,7 +12,7 @@ PYTHON_SITEPACKAGES_DIR = "/usr/lib/python3.11/site-packages"
 
 
 pytorch:
-ifeq ($(CONFIG_PYTORCH),y)
+ifeq ($(strip $(subst ",,$(CONFIG_PYTORCH))),y)
 	@[ $(DESTARCH) != arm64 -o $(DISTROVARIANT) = tiny -o $(DISTROVARIANT) = base ] && exit || \
 	 $(call fbprint_b,"pytorch") && \
 	 $(call repo-mngr,fetch,pytorch,apps/ml) && \
