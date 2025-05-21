@@ -82,7 +82,7 @@ ifeq ($(strip $(subst ",,$(CONFIG_WESTON))),y)
 	 install -m 644 $(FBDIR)/src/system/weston/weston.service $(DESTDIR)/lib/systemd/system/ && \
 	 ln -sf /lib/systemd/system/weston.service $(DESTDIR)/etc/systemd/system/graphical.target.wants/weston.service && \
 	 install -m 644 $(FBDIR)/src/system/weston/weston.socket $(DESTDIR)/lib/systemd/system && \
-	 ln -s /lib/systemd/system/weston.socket $(DESTDIR)/etc/systemd/system/sockets.target.wants/weston.socket && \
+	 ln -sf /lib/systemd/system/weston.socket $(DESTDIR)/etc/systemd/system/sockets.target.wants/weston.socket && \
 	 install -m 644 $(FBDIR)/src/system/weston/weston.png $(DESTDIR)/usr/share/icons/hicolor/48x48/apps/weston.png && \
 	 install -m 644 $(FBDIR)/src/system/weston/wallpaper.png $(DESTDIR)/usr/share/weston/wallpaper.png && \
 	 install -m 644 $(FBDIR)/src/system/weston/weston.desktop $(DESTDIR)/usr/share/applications/weston.desktop && \
