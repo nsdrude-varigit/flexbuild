@@ -58,5 +58,6 @@ nnstreamer:
 		-Dnnstreamer-edge-support=enabled \
 		-Dtflite2-support=enabled \
 		-Dtvm-support=enabled && \
+	 rm -f $(MLDIR)/nnstreamer/build_$(DISTROTYPE)_$(ARCH)/ext/nnstreamer/extra/nnstreamer_python.so && \
 	 ninja -j $(JOBS) -C build_$(DISTROTYPE)_$(ARCH) install && \
 	 $(call fbprint_d,"nnstreamer")
