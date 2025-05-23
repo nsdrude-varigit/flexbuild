@@ -21,7 +21,7 @@ ifeq ($(strip $(subst ",,$(CONFIG_PYTORCH))),y)
 	 install -d $(DESTDIR)/usr/bin/pytorch/examples && \
 	 install -m 0555 examples/* $(DESTDIR)/usr/bin/pytorch/examples && \
 	 install -m 0555 src/build.sh $(DESTDIR)/usr/bin/pytorch && \
-	 pip3 install --ignore-installed --disable-pip-version-check -v --platform linux_aarch64 \
+	 pip3 install --upgrade --ignore-installed --disable-pip-version-check -v --platform linux_aarch64 \
 	      -t $(DESTDIR)/$(PYTHON_SITEPACKAGES_DIR) --no-cache-dir --no-deps whl/torch-$(PV)-$(PYV)*.whl && \
 	 mv $(DESTDIR)/$(PYTHON_SITEPACKAGES_DIR)/bin/* $(DESTDIR)/usr/bin && \
 	 rm -rf $(DESTDIR)/$(PYTHON_SITEPACKAGES_DIR)/bin && \
