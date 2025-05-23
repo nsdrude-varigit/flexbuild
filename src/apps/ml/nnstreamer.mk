@@ -46,7 +46,14 @@ nnstreamer:
 		-Dc_args="-I$(DESTDIR)/usr/include -I$(RFSDIR)/usr/include" \
 		-Dcpp_args="-I$(DESTDIR)/usr/include -I$(RFSDIR)/usr/include -I$(MLDIR)/tvm/3rdparty/dmlc-core/include \
 			    -I$(MLDIR)/tflite/build_debian_arm64/abseil-cpp -I$(MLDIR)/tflite \
-			    -Wno-error=comment -Wno-sign-compare -Wno-error=unused-parameter -Wno-error=redundant-decls" \
+			    -Wno-error=comment -Wno-sign-compare -Wno-error=unused-parameter -Wno-error=redundant-decls \
+			    -I$(MLDIR)/tflite/third_party/xla/third_party/tsl \
+			    -I$(MLDIR)/tflite/build_debian_arm64/eigen \
+			    -I$(MLDIR)/tflite/build_debian_arm64/ml_dtypes \
+			    -I$(MLDIR)/tflite/build_debian_arm64/protobuf/src \
+			    -I$(MLDIR)/tflite/build_debian_arm64/gemmlowp \
+			    -I$(MLDIR)/tflite/tensorflow/lite/toco \
+			    -I$(MLDIR)/nnstreamer/third_party/xla/third_party/tsl" \
 		-Dc_link_args="-L$(DESTDIR)/usr/lib -L$(RFSDIR)/usr/lib/aarch64-linux-gnu" \
 		-Dcpp_link_args="-L$(DESTDIR)/usr/lib -L$(RFSDIR)/usr/lib/aarch64-linux-gnu" \
 		-Denable-float16=true \
@@ -59,7 +66,7 @@ nnstreamer:
 		-Dpython3-support=enabled \
 		-Dnnstreamer-edge-support=enabled \
 		-Dtflite2-support=enabled \
-		-Dtvm-support=enabled && \
+		-Dtvm-support=disabled && \
 	 rm -f $(MLDIR)/nnstreamer/build_$(DISTROTYPE)_$(ARCH)/ext/nnstreamer/extra/nnstreamer_python.so && \
 	 mkdir -p $(RFSDIR)/usr/local/include/nnstreamer && \
 	 ninja -j $(JOBS) -C build_$(DISTROTYPE)_$(ARCH) install && \
