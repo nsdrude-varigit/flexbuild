@@ -68,6 +68,9 @@ nnstreamer:
 		-Dtflite2-support=enabled \
 		-Dtvm-support=disabled && \
 	 rm -f $(MLDIR)/nnstreamer/build_$(DISTROTYPE)_$(ARCH)/ext/nnstreamer/extra/nnstreamer_python.so && \
+	 protoc --cpp_out=$(MLDIR)/tflite/tensorflow/lite/toco/ --proto_path=$(MLDIR)/tflite/ $(MLDIR)/tflite/tensorflow/lite/toco/model_flags.proto && \
+	 protoc --cpp_out=$(MLDIR)/tflite/tensorflow/lite/toco/ --proto_path=$(MLDIR)/tflite/ $(MLDIR)/tflite/tensorflow/lite/toco/types.proto && \
+	 protoc --cpp_out=. --proto_path=$(MLDIR)/tflite/ $(MLDIR)/tflite/third_party/xla/third_party/tsl/tsl/protobuf/error_codes.proto && \
 	 mkdir -p $(RFSDIR)/usr/local/include/nnstreamer && \
 	 ninja -j $(JOBS) -C build_$(DISTROTYPE)_$(ARCH) install && \
 	 $(call fbprint_d,"nnstreamer")
