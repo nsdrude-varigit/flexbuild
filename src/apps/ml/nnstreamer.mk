@@ -31,9 +31,6 @@ nnstreamer:
 	 if [ ! -f $(DESTDIR)/usr/lib/libnnstreamer-edge.so ]; then \
 	     bld nnstreamer_edge -r $(DISTROTYPE):$(DISTROVARIANT) -a $(DESTARCH); \
 	 fi && \
-	 if [ ! -f $(DESTDIR)/usr/lib/libtvm.so ]; then \
-	     bld tvm -r $(DISTROTYPE):$(DISTROVARIANT) -a $(DESTARCH); \
-	 fi && \
 	 \
 	 export CC="$(CROSS_COMPILE)gcc --sysroot=$(RFSDIR) -march=armv8-a+crc+crypto" && \
 	 export CXX="$(CROSS_COMPILE)g++ --sysroot=$(RFSDIR) -march=armv8-a+crc+crypto" && \
