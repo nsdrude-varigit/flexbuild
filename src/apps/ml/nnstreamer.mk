@@ -16,6 +16,7 @@ nnstreamer:
          fi && \
 	 mkdir -p $(DESTDIR)/usr/lib/pkgconfig && \
 	 rm -f meson.cross && \
+	 sed -i 's/werror=true/werror=false/' meson.build && \
 	 sed -i 's/cpp_std=c++14/cpp_std=c++17/' meson.build && \
 	 sed -e 's%@TARGET_CROSS@%$(CROSS_COMPILE)%g' -e 's%@STAGING_DIR@%$(RFSDIR)%g' \
 	     -e 's%@DESTDIR@%$(DESTDIR)%g' $(FBDIR)/src/system/meson.cross > meson.cross && \
