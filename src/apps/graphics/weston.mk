@@ -10,6 +10,8 @@
 
 # version：12.0.3
 
+ENABLE_G2D ?= "true"
+
 weston:
 ifeq ($(strip $(subst ",,$(CONFIG_WESTON))),y)
 	@[ $(DISTROVARIANT) != desktop ] && exit || \
@@ -52,7 +54,7 @@ ifeq ($(strip $(subst ",,$(CONFIG_WESTON))),y)
 		-Drenderer-gl=true \
 		-Dbackend-headless=false \
 		-Dimage-jpeg=true \
-		-Drenderer-g2d=true \
+		-Drenderer-g2d=$(ENABLE_G2D) \
 		-Dbackend-drm=true \
 		-Dlauncher-libseat=true \
 		-Ddeprecated-launcher-logind=false \
@@ -78,6 +80,9 @@ ifeq ($(strip $(subst ",,$(CONFIG_WESTON))),y)
 	 mkdir -p $(DESTDIR)/etc/xdg/weston $(DESTDIR)/etc/systemd/system/graphical.target.wants $(DESTDIR)/etc/default && \
 	 mkdir -p $(DESTDIR)/usr/share/applications $(DESTDIR)/usr/share/icons/hicolor/48x48/apps $(DESTDIR)/lib/systemd/system && \
 	 cp $(FBDIR)/src/system/weston/weston.ini $(DESTDIR)/etc/xdg/weston/weston.ini && \
+	 if [ $(ENABLE_G2D) = "false" ]; then \
+		sed -i '/use-g2d=true/s/^/#/' $(DESTDIR)/etc/xdg/weston/weston.ini; \
+	 fi && \
 	 install -m 644 $(FBDIR)/src/system/weston/weston $(DESTDIR)/etc/default/weston && \
 	 install -m 644 $(FBDIR)/src/system/weston/weston.service $(DESTDIR)/lib/systemd/system/ && \
 	 ln -sf /lib/systemd/system/weston.service $(DESTDIR)/etc/systemd/system/graphical.target.wants/weston.service && \
