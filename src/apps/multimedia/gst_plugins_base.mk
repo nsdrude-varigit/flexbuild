@@ -40,7 +40,7 @@ gst_plugins_base:
 	     bld gstreamer -r $(DISTROTYPE):$(DISTROVARIANT) -a $(DESTARCH); \
 	 fi && \
 	 if [ ! -f $(DESTDIR)/usr/lib/libg2d.so ]; then \
-	      bld imx_gpu_g2d -m imx8mmevk -r $(DISTROTYPE):$(DISTROVARIANT); \
+	      bld imx_gpu_g2d -m $(MACHINE) -r $(DISTROTYPE):$(DISTROVARIANT); \
 	 fi && \
 	 if [ ! -f $(DESTDIR)/usr/include/linux/dma-buf.h ]; then \
 	     bld linux-headers -r $(DISTROTYPE):$(DISTROVARIANT) -a $(DESTARCH); \
