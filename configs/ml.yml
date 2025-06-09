@@ -54,7 +54,7 @@ repo:
 
   pytorch:
     url:    https://github.com/nxp-imx/pytorch-release.git
-    commit: 6948822f1d3
+    commit: 012e780225f891b90747592e254b2399d6ec07fb
 
   flatbuffers:
     url:    https://github.com/google/flatbuffers.git
