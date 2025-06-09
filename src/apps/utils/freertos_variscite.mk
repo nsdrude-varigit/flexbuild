@@ -5,7 +5,6 @@
 # Variscite FreeRTOS
 
 CM_GCC = "12.3.rel1"
-CM_BOARD = "dart_mx8mm"
 
 # Firmware source directories
 DEMO_LIST = multicore_examples/rpmsg_lite_str_echo_rtos multicore_examples/rpmsg_lite_pingpong_rtos/linux_remote demo_apps/hello_world
