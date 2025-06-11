@@ -153,7 +153,7 @@ repo:
 # kernel and modules git repositories
   linux:
     url:  https://github.com/varigit/linux-imx.git
-    commit:  bf1b1781e47b1388faaf8689bd7296b3a82b8316
+    commit:  277a0fcbc8b58405c2f0928704cfb31d5dd7e516
 
   cryptodev_linux:
     url:  https://github.com/cryptodev-linux/cryptodev-linux.git
