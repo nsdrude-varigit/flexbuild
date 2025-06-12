@@ -34,6 +34,8 @@ ConditionPathExists=/dev/tty0
 # Requires systemd-notify.so Weston plugin.
 Type=notify
 EnvironmentFile=/etc/default/weston
+ExecStartPre=/bin/mkdir -p /tmp/.X11-unix
+ExecStartPre=/bin/chmod 1777 /tmp/.X11-unix
 ExecStart=/usr/bin/weston --log=${XDG_RUNTIME_DIR}/weston.log --modules=systemd-notify.so
 
 # Optional watchdog setup
