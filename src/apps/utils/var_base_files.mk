@@ -14,4 +14,5 @@ var_base_files:
 	install -d $(DESTDIR)/etc && \
 	install -m 0755 $(PKGDIR)/meta_variscite_sdk_common/recipes-core/base-files/base-files/issue $(DESTDIR)/etc && \
 	install -m 0755 $(PKGDIR)/meta_variscite_sdk_common/recipes-core/base-files/base-files/issue.net $(DESTDIR)/etc/issue.net && \
+	install -m 0755 $(FBDIR)/src/system/base-files/fstab $(DESTDIR)/etc && \
 	$(call fbprint_d,"var_base_files") \
