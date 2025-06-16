@@ -105,6 +105,8 @@ mmdebstrap:
     - bluez-obexd
     - expect
     - systemd-resolved
+    - screen
+    - python3-dbus
   setup-hooks:
       # Setup NXP board-specific configurations for various platforms
     - 'mkdir -p $1/usr/local/bin $1/etc/udev/rules.d $1/etc/modprobe.d'

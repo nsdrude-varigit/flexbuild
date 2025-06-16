@@ -127,6 +127,8 @@ mmdebstrap:
     - expect
     - systemd-resolved
     - hostapd
+    - screen
+    - python3-dbus
   setup-hooks:
       # Setup NXP board-specific configurations for various platforms
     - 'mkdir -p $1/usr/local/bin $1/etc/udev/rules.d $1/etc/modprobe.d'
