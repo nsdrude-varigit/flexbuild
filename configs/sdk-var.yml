@@ -149,6 +149,14 @@ repo:
   fw_upower_bin:
     url:  https://www.nxp.com/lgfiles/NMG/MAD/YOCTO/firmware-upower-1.3.1.bin
 
+  openthread:
+    url: https://github.com/openthread/openthread.git
+    commit: 9681690fab100590566e4937cbf2d072de031ff3
+
+  openthread_iwxxx_spi:
+    url: https://github.com/openthread/openthread.git
+    commit: 9681690fab100590566e4937cbf2d072de031ff3
+
 
 # kernel and modules git repositories
   linux:
