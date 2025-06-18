@@ -21,15 +21,17 @@ freertos_variscite:
 	fi && \
 	mkdir -p $(PKGDIR)/apps/utils/freertos_variscite && \
 	cd $(PKGDIR)/apps/utils/freertos_variscite && \
-	DEMOS_PATH="$(PKGDIR)/apps/utils/freertos_variscite/boards/$(CM_BOARD)" && \
 	for CM_DEMO in $(DEMO_LIST); do \
-		DIR_GCC=$$DEMOS_PATH/$$CM_DEMO/armgcc; \
-		cd $$DIR_GCC && \
-    	./clean.sh && \
-		if [ `grep -q "make -j" build_all.sh` ]; then \
-        	sed -i "s/make -j.*[0-9]*/make 28/g" build_all.sh; \
-    	fi && \
-		LDFLAGS="" CFLAGS="" CXXFLAGS="" ./build_all.sh > /dev/null; \
+	  for BOARD_SEL in $(CM_BOARD); do \
+			DEMOS_PATH="$(PKGDIR)/apps/utils/freertos_variscite/boards/$$BOARD_SEL" && \
+			DIR_GCC=$$DEMOS_PATH/$$CM_DEMO/armgcc; \
+			cd $$DIR_GCC && \
+				./clean.sh && \
+			if [ `grep -q "make -j" build_all.sh` ]; then \
+						sed -i "s/make -j.*[0-9]*/make 28/g" build_all.sh; \
+				fi && \
+			LDFLAGS="" CFLAGS="" CXXFLAGS="" ./build_all.sh > /dev/null; \
+		done ; \
 	done && \
 	RPROC_DIR="$(PKGDIR)/meta_variscite_bsp_imx/recipes-bsp/freertos-variscite/freertos-variscite" && \
 	install -d $(DESTDIR)/etc/remoteproc && \
@@ -40,13 +42,27 @@ freertos_variscite:
 	install -d $(DESTDIR)/usr/lib/firmware/ && \
 	install -d $(DESTDIR)/boot/ && \
 	for CM_DEMO in $(DEMO_LIST); do \
-		DIR_GCC=$$DEMOS_PATH/$$CM_DEMO/armgcc && \
-		for CM_BUILD_TARGET in $(CM_BUILD_TARGETS); do \
-			FW_BASENAME=`basename $$DIR_GCC/$$CM_BUILD_TARGET/*.elf .elf` && \
-			FILE_CM_FW="$$FW_BASENAME.elf" && \
-			install -m 644 $$DIR_GCC/$$CM_BUILD_TARGET/$$FILE_CM_FW $(DESTDIR)/usr/lib/firmware/cm_$$FILE_CM_FW.$$CM_BUILD_TARGET && \
-			FILE_CM_FW=`basename $$DIR_GCC/$$CM_BUILD_TARGET/*.bin` && \
-			install -m 644 $$DIR_GCC/$$CM_BUILD_TARGET/$$FILE_CM_FW $(DESTDIR)/boot/cm_$$FILE_CM_FW.$$CM_BUILD_TARGET; \
+		for BOARD_SEL in $(CM_BOARD); do \
+			if [ $(MACHINE) = imx8mp-var-dart ]; then \
+				if [ $$BOARD_SEL = dart_mx8mp ]; then \
+					CM_FW_SUFFIX="_dart"; \
+				elif [ $$BOARD_SEL = som_mx8mp ]; then \
+					CM_FW_SUFFIX="_som"; \
+				else \
+					CM_FW_SUFFIX=""; \
+				fi; \
+			else \
+					CM_FW_SUFFIX=""; \
+			fi && \
+			DEMOS_PATH="$(PKGDIR)/apps/utils/freertos_variscite/boards/$$BOARD_SEL" && \
+			DIR_GCC=$$DEMOS_PATH/$$CM_DEMO/armgcc && \
+			for CM_BUILD_TARGET in $(CM_BUILD_TARGETS); do \
+				FW_BASENAME=`basename $$DIR_GCC/$$CM_BUILD_TARGET/*.elf .elf` && \
+				FILE_CM_FW="$$FW_BASENAME.elf" && \
+				install -m 644 $$DIR_GCC/$$CM_BUILD_TARGET/$$FILE_CM_FW $(DESTDIR)/usr/lib/firmware/cm_$$FILE_CM_FW.$$CM_BUILD_TARGET$$CM_FW_SUFFIX && \
+				FILE_CM_FW=`basename $$DIR_GCC/$$CM_BUILD_TARGET/*.bin` && \
+				install -m 644 $$DIR_GCC/$$CM_BUILD_TARGET/$$FILE_CM_FW $(DESTDIR)/boot/cm_$$FILE_CM_FW.$$CM_BUILD_TARGET$$CM_FW_SUFFIX; \
+			done; \
 		done; \
 	done && \
 	$(call fbprint_d,"freertos_variscite")
