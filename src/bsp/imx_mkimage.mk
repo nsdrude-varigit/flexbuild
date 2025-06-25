@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
+SOC_REV ?= "B0"
 
 define imx_mkimage_target
     if [ ! -d $(BSPDIR)/imx_mkimage ]; then \
@@ -40,6 +41,9 @@ define imx_mkimage_target
 	wget -q $(repo_scfw_bin_url) -O imx-scfw.bin && chmod +x imx-scfw.bin && \
 	./imx-scfw.bin --auto-accept && mv `basename -s .bin $(repo_scfw_bin_url)` imx-scfw && rm -f imx-scfw.bin; \
     fi && \
+    if [ ! -d $(BSPDIR)/imx_sc_firmware/ ]; then \
+	bld imx_sc_firmware -r $(DISTROTYPE):$(DISTROVARIANT) -a $(DESTARCH); \
+    fi && \
     if [ ! -d $(BSPDIR)/sm/build/ ]; then \
 	bld -m $(MACHINE) sm; \
     fi && \
@@ -61,7 +65,11 @@ define imx_mkimage_target
 	cp -f $(BSPDIR)/imx-seco/firmware/seco/mx8qmb0-ahab-container.img $(BSPDIR)/imx_mkimage/iMX8QM; \
     elif echo $1 | grep -qE ^imx8qx; then \
 	SOC=iMX8QX; SOC_FAMILY=iMX8QX; target=$${IMX_MKIMAGE_TARGET:-flash_spl}; \
-	cp -f $(BSPDIR)/imx-scfw/mx8qx-mek-scfw-tcm.bin $(BSPDIR)/imx_mkimage/iMX8QX/scfw_tcm.bin; \
+	if [ $$SOC_REV = C0 ];  then \
+		cp -f $(BSPDIR)/imx_sc_firmware/src/scfw_export_mx8qx_b0/build_mx8qx_b0/scfw_tcm.bin $(BSPDIR)/imx_mkimage/iMX8QX/scfw_tcm.bin; \
+	else \
+		cp -f $(BSPDIR)/imx-scfw/mx8qx-mek-scfw-tcm.bin $(BSPDIR)/imx_mkimage/iMX8QX/scfw_tcm.bin; \
+	fi && \
 	cp -f $(BSPDIR)/imx-seco/firmware/seco/mx8qx*-ahab-container.img $(BSPDIR)/imx_mkimage/iMX8QX; \
     elif echo $1 | grep -qE ^imx8ulp; then \
 	SOC=iMX8ULP; SOC_FAMILY=iMX8ULP; target=$${IMX_MKIMAGE_TARGET:-flash_singleboot_m33}; \
@@ -111,7 +119,7 @@ define imx_mkimage_target
     if [ $${MACHINE:0:6} = imx8qm ];  then \
 	$(MAKE) SOC=iMX8QM -C iMX8QM -f soc.mak $$target; \
     elif [ $${MACHINE:0:6} = imx8qx ]; then \
-	$(MAKE) SOC=iMX8QX REV=B0 -C iMX8QX -f soc.mak $$target; \
+	$(MAKE) SOC=iMX8QX REV=$$SOC_REV -C iMX8QX -f soc.mak $$target $${IMX_MKIMAGE_DTBS:+dtbs="$$IMX_MKIMAGE_DTBS"} ; \
     elif [ $${MACHINE:0:5} = imx91 ]; then \
         $(MAKE) SOC=iMX91 REV=A0 -C iMX91 -f soc.mak $$target; \
     elif [ $${MACHINE:0:5} = imx93 ]; then \

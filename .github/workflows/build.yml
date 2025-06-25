@@ -18,6 +18,7 @@ jobs:
           - imx8mn-var-som
           - imx95-var-dart
           - imx93-var-som
+          - imx8qxp-var-som
     uses: varigit-dev/action-workflows/.github/workflows/flexbuild.yml@dev_flexbuild
     with:
       flexbuild-ref: ${{ github.sha }}

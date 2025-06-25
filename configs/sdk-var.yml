@@ -159,6 +159,9 @@ repo:
     url: https://github.com/openthread/openthread.git
     commit: 9681690fab100590566e4937cbf2d072de031ff3
 
+  imx_sc_firmware:
+    url: https://github.com/varigit/imx-sc-firmware.git
+    commit: 810b6dcedbba15cd121a1cb4e2f7d7c8a7387702
 
 # kernel and modules git repositories
   linux:
