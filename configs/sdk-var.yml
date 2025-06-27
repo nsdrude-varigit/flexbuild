@@ -315,6 +315,10 @@ repo:
   imx_g2d_samples:
     url:  https://github.com/nxp-imx/g2d-samples.git
 
+  sm:
+    url: https://github.com/varigit/imx-sm.git
+    commit: 091468c0742b8f0cd3abf10e118cbd308c904de6
+
   oei:
     url: https://github.com/varigit/imx-oei.git
     commit: 7b1da7588344313cb65b8e23a093ad7f563d9f34
