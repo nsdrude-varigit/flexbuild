@@ -25,6 +25,9 @@ define imx_mkimage_target
 	cd $(BSPDIR) && wget -q $(repo_seco_bin_url) -O imx-seco.bin && chmod +x imx-seco.bin && \
 	./imx-seco.bin --auto-accept && mv `basename -s .bin $(repo_seco_bin_url)` imx-seco && rm -f imx-seco.bin; \
     fi && \
+    if [ ! -d $(BSPDIR)/oei/build/ ]; then \
+	bld -m $(MACHINE) oei; \
+    fi && \
     if [ ! -d $(BSPDIR)/fw_ele ]; then \
 	cd $(BSPDIR) && wget -q $(repo_fw_ele_bin_url) -O fw_ele.bin && chmod +x fw_ele.bin && \
 	./fw_ele.bin --auto-accept && mv `basename -s .bin $(repo_fw_ele_bin_url)` fw_ele && rm -f fw_ele.bin; \
@@ -36,6 +39,9 @@ define imx_mkimage_target
     if [ ! -f $(BSPDIR)/imx-scfw/mx8qx-mek-scfw-tcm.bin ]; then \
 	wget -q $(repo_scfw_bin_url) -O imx-scfw.bin && chmod +x imx-scfw.bin && \
 	./imx-scfw.bin --auto-accept && mv `basename -s .bin $(repo_scfw_bin_url)` imx-scfw && rm -f imx-scfw.bin; \
+    fi && \
+    if [ ! -d $(BSPDIR)/sm/build/ ]; then \
+	bld -m $(MACHINE) sm; \
     fi && \
     if [ ! -d $(BSPDIR)/imx_mcore_demos ]; then \
 	bld mcore_demo; \
@@ -72,6 +78,12 @@ define imx_mkimage_target
 	cp $(BSPDIR)/fw_upower/upower_a*.bin $(BSPDIR)/imx_mkimage/iMX93/; \
 	cp $(BSPDIR)/imx_mcore_demos/imx93-m33-demo/imx93-11x11-evk_m33_TCM_rpmsg_lite_str_echo_rtos.bin \
 	   $(BSPDIR)/imx_mkimage/iMX93/m33_image.bin; \
+    elif echo $1 | grep -qE ^imx95; then \
+	SOC=iMX95; SOC_FAMILY=iMX95; target=$${IMX_MKIMAGE_TARGET:-flash_singleboot}; \
+	cp $(BSPDIR)/fw_ele/mx95a0-ahab-container.img $(BSPDIR)/imx_mkimage/iMX95; \
+	cp $(BSPDIR)/oei/build/mx95lp5/tcm/oei-m33-tcm.bin $(BSPDIR)/imx_mkimage/iMX95; \
+	cp $(BSPDIR)/oei/build/mx95lp5/ddr/oei-m33-ddr.bin $(BSPDIR)/imx_mkimage/iMX95; \
+	cp $(BSPDIR)/sm/build/mx95evk/m33_image.bin $(BSPDIR)/imx_mkimage/iMX95; \
     fi && \
     cp -f $(BSPDIR)/firmware-imx/firmware/ddr/synopsys/*.bin $(BSPDIR)/imx_mkimage/$$SOC_FAMILY; \
     \
@@ -104,8 +116,14 @@ define imx_mkimage_target
         $(MAKE) SOC=iMX91 REV=A0 -C iMX91 -f soc.mak $$target; \
     elif [ $${MACHINE:0:5} = imx93 ]; then \
 	$(MAKE) SOC=iMX93 REV=A1 -C iMX93 -f soc.mak $$target; \
+    elif [ $${MACHINE:0:5} = imx95 ]; then \
+	cd $(BSPDIR)/imx_mkimage/$$SOC_FAMILY/ && \
+	$(MAKE) REV=A0 OEI=YES LPDDR_TYPE=lpddr5 LPDDR_FUNC=train -f soc.mak $$target && \
+	cd $(BSPDIR)/imx_mkimage; \
     fi && \
-    $(MAKE) SOC=$$SOC $(REV_OPTION) $$target $${IMX_MKIMAGE_DTBS:+dtbs="$$IMX_MKIMAGE_DTBS"} ; \
+    if [ $${MACHINE:0:5} = imx8m ]; then \
+	$(MAKE) SOC=$$SOC $(REV_OPTION) $$target $${IMX_MKIMAGE_DTBS:+dtbs="$$IMX_MKIMAGE_DTBS"} ; \
+    fi && \
     mkdir -p $(FBOUTDIR)/bsp/imx-mkimage/$$brd && \
     cp $$SOC_FAMILY/flash.bin $(FBOUTDIR)/bsp/imx-mkimage/$$brd/flash.bin;
 endef
