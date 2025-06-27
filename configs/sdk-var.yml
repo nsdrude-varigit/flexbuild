@@ -315,6 +315,10 @@ repo:
   imx_g2d_samples:
     url:  https://github.com/nxp-imx/g2d-samples.git
 
+  oei:
+    url: https://github.com/varigit/imx-oei.git
+    commit: 7b1da7588344313cb65b8e23a093ad7f563d9f34
+
   cogl:
     url:  https://gitlab.gnome.org/GNOME/cogl.git
     tag:  1.22.8
