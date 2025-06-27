@@ -11,6 +11,7 @@
 # version：12.0.3
 
 ENABLE_G2D ?= "true"
+WESTON_RENDER ?= ""
 
 weston:
 ifeq ($(strip $(subst ",,$(CONFIG_WESTON))),y)
@@ -82,6 +83,10 @@ ifeq ($(strip $(subst ",,$(CONFIG_WESTON))),y)
 	 cp $(FBDIR)/src/system/weston/weston.ini $(DESTDIR)/etc/xdg/weston/weston.ini && \
 	 if [ $(ENABLE_G2D) = "false" ]; then \
 		sed -i '/use-g2d=true/s/^/#/' $(DESTDIR)/etc/xdg/weston/weston.ini; \
+	 fi && \
+	 if [ -n "$(WESTON_RENDER)" ]; then \
+		sed -i '/^\[core\]/,/^\[.*\]/ s/^\s*renderer\s*=.*//g' $(DESTDIR)/etc/xdg/weston/weston.ini && \
+		sed -i '/^\[core\]/a renderer=$(WESTON_RENDER)' $(DESTDIR)/etc/xdg/weston/weston.ini; \
 	 fi && \
 	 install -m 644 $(FBDIR)/src/system/weston/weston $(DESTDIR)/etc/default/weston && \
 	 install -m 644 $(FBDIR)/src/system/weston/weston.service $(DESTDIR)/lib/systemd/system/ && \
