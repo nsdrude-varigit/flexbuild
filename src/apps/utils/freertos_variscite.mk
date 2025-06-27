@@ -5,13 +5,14 @@
 # Variscite FreeRTOS
 
 CM_GCC = "12.3.rel1"
+FREERTOS_SUPPORT ?= "true"
 
 # Firmware source directories
 DEMO_LIST = multicore_examples/rpmsg_lite_str_echo_rtos multicore_examples/rpmsg_lite_pingpong_rtos/linux_remote demo_apps/hello_world
 CM_BUILD_TARGETS = debug ddr_debug
 
 freertos_variscite:
-	@[ $(SOCFAMILY) != IMX -o $(DISTROVARIANT) = base -o $(DISTROVARIANT) = tiny ] && exit || \
+	@[ $(SOCFAMILY) != IMX -o $(DISTROVARIANT) = base -o $(DISTROVARIANT) = tiny -o $(FREERTOS_SUPPORT) = false ] && exit || \
 	$(call fbprint_b,"freertos_variscite") && \
 	$(call repo-mngr,fetch,freertos_variscite,apps/utils) && \
 	$(call repo-mngr,fetch,meta_variscite_bsp_imx) && \
