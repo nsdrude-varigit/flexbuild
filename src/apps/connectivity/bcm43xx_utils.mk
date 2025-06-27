@@ -5,9 +5,10 @@
 
 # Variscite WiFi + Bluetooth
 
+BCM43XX_UTILS ?= "true"
 
 bcm43xx_utils:
-	@[ $(SOCFAMILY) != IMX -o $(DISTROVARIANT) = base -o $(DISTROVARIANT) = tiny ] && exit || \
+	@[ $(SOCFAMILY) != IMX -o $(DISTROVARIANT) = base -o $(DISTROVARIANT) = tiny -o $(BCM43XX_UTILS) = false ] && exit || \
 	$(call fbprint_b,"bcm43xx_utils") && \
 	$(call repo-mngr,fetch,meta_variscite_bsp_imx) && \
 	BCM_DIR="$(PKGDIR)/meta_variscite_bsp_imx/recipes-connectivity/bcm43xx-utils/bcm43xx-utils/$(MACHINE)" && \
