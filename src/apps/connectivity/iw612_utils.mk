@@ -5,9 +5,10 @@
 
 # Startup and config files for use with IW612 wireless module
 
+IW612_UTILS ?= "true"
 
 iw612_utils:
-	@[ $(SOCFAMILY) != IMX -o $(DISTROVARIANT) = base -o $(DISTROVARIANT) = tiny ] && exit || \
+	@[ $(SOCFAMILY) != IMX -o $(DISTROVARIANT) = base -o $(DISTROVARIANT) = tiny -o $(IW612_UTILS) = false ] && exit || \
 	$(call fbprint_b,"iw612_utils") && \
 	$(call repo-mngr,fetch,meta_variscite_bsp_imx) && \
 	$(call repo-mngr,fetch,meta_variscite_bsp_common) && \
