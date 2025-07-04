@@ -63,6 +63,9 @@ linux:
 	for dtb in $(KERNEL_DEVICETREE); do \
 		cp $$opdir/arch/$(DESTARCH)/boot/dts/$$dtb $(FBOUTDIR)/linux/$(KERNEL_TREE)/$(DESTARCH)/$(SOCFAMILY); \
 	done; \
+	if [ $$MACHINE = imx8qxp-var-som ];  then \
+	    ln -s $(FBOUTDIR)/linux/$(KERNEL_TREE)/$(DESTARCH)/$(SOCFAMILY)/imx8qxp-var-som-symphony-sd.dtb $(FBOUTDIR)/linux/$(KERNEL_TREE)/$(DESTARCH)/$(SOCFAMILY)/imx8qxp-var-som-symphony.dtb; \
+	fi && \
 	ls -l $(FBOUTDIR)/linux/$(KERNEL_TREE)/$(DESTARCH)/$(SOCFAMILY) && \
 	$(call fbprint_d,"$(KERNEL_TREE) $$curbrch in $(FBOUTDIR)/linux/$(KERNEL_TREE)/$(DESTARCH)/$(SOCFAMILY)")
 
