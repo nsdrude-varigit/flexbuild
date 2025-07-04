@@ -183,6 +183,7 @@ mmdebstrap:
     - 'rm $1/root/divert-sleep-scripts.sh'
     - 'chroot "$1" rm -rf /usr/lib/pm-utils/sleep.d'
     - 'chroot "$1" ln -sf /bin/busybox /bin/usleep'
+    - 'chroot "$1" ln -sf /usr/bin/busybox /usr/bin/devmem'
     - 'cp src/system/gpuconfig $1/etc/'
     - 'cp src/system/gpuconfig.service $1/lib/systemd/system/'
     - 'chroot "$1" ln -s /lib/systemd/system/gpuconfig.service /etc/systemd/system/graphical.target.wants/gpuconfig.service'

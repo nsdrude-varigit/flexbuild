@@ -152,6 +152,7 @@ mmdebstrap:
     - 'rm $1/root/divert-sleep-scripts.sh'
     - 'chroot "$1" rm -rf /usr/lib/pm-utils/sleep.d'
     - 'chroot "$1" ln -sf /bin/busybox /bin/usleep'
+    - 'chroot "$1" ln -sf /usr/bin/busybox /usr/bin/devmem'
     - 'printf "/usr/lib\n" >> $1/etc/ld.so.conf.d/01-sdk.conf'
     - 'printf " * Support:   https://www.nxp.com/support\n" >> $1/etc/update-motd.d/20-help-text'
     - 'printf " * Licensing: https://lsdk.github.io/eula\n" >> $1/etc/update-motd.d/20-help-text'
