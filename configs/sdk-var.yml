@@ -85,7 +85,7 @@ repo:
 
   uboot:
     url:  https://github.com/varigit/uboot-imx.git
-    commit: 6ece7b888e5a8a1ef5bea11ae3f8c29a28cab52e
+    commit: 7f28fa65c6fa092c910d78a79edfd39c31d1fa6a
 
   rcw:
     url:  https://github.com/nxp-qoriq/rcw.git
