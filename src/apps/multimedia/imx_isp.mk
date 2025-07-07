@@ -10,7 +10,8 @@
 # disable the v4l_drm_test
 
 imx_isp:
-	@[ $(DISTROVARIANT) != desktop -o $(SOCFAMILY) != IMX ] && exit || \
+	@[ $(DISTROVARIANT) != desktop -o $(SOCFAMILY) != IMX -o \
+	   $${MACHINE:0:6} != imx8mp ] && exit || \
 	 $(call fbprint_b,"imx_isp") && \
 	 cd $(MMDIR) && \
 	 if [ ! -d $(MMDIR)/imx_isp ]; then \
