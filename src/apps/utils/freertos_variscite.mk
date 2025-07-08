@@ -25,12 +25,10 @@ freertos_variscite:
 	for CM_DEMO in $(DEMO_LIST); do \
 	  for BOARD_SEL in $(CM_BOARD); do \
 			DEMOS_PATH="$(PKGDIR)/apps/utils/freertos_variscite/boards/$$BOARD_SEL" && \
-			DIR_GCC=$$DEMOS_PATH/$$CM_DEMO/armgcc; \
+			DIR_GCC=$$DEMOS_PATH/$$CM_DEMO/armgcc && \
 			cd $$DIR_GCC && \
-				./clean.sh && \
-			if [ `grep -q "make -j" build_all.sh` ]; then \
-						sed -i "s/make -j.*[0-9]*/make 28/g" build_all.sh; \
-				fi && \
+			./clean.sh && \
+			sed -i 's/make -j.*[0-9]*/make -j $(JOBS)/g' $$DIR_GCC/build_all.sh && \
 			LDFLAGS="" CFLAGS="" CXXFLAGS="" ./build_all.sh > /dev/null; \
 		done ; \
 	done && \
