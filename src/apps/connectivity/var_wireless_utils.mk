@@ -31,6 +31,4 @@ var_wireless_utils:
 		$(DESTDIR)/etc/systemd/system/multi-user.target.wants/variscite-bt.service && \
 	ln -sf $(DESTDIR)/etc/systemd/system/variscite-ot.service \
 		$(DESTDIR)/etc/systemd/system/multi-user.target.wants/variscite-ot.service && \
-	ln -sf $(DESTDIR)/etc/system/wpa_supplicant@.service \
-		$(DESTDIR)/etc/systemd/system/multi-user.target.wants/wpa_supplicant@wlan0.service && \
 	$(call fbprint_d,"var_wireless_utils") \
