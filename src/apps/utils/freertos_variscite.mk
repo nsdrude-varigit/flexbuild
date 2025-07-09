@@ -4,21 +4,23 @@
 #
 # Variscite FreeRTOS
 
-CM_GCC = "12.3.rel1"
 FREERTOS_SUPPORT ?= "true"
+FREERTOS_COMMIT ?= $(repo_freertos_variscite_commit)
 
 # Firmware source directories
-DEMO_LIST = multicore_examples/rpmsg_lite_str_echo_rtos multicore_examples/rpmsg_lite_pingpong_rtos/linux_remote demo_apps/hello_world
-CM_BUILD_TARGETS = debug ddr_debug
+DEMO_LIST ?= multicore_examples/rpmsg_lite_str_echo_rtos multicore_examples/rpmsg_lite_pingpong_rtos/linux_remote demo_apps/hello_world
+CM_BUILD_TARGETS ?= debug ddr_debug
 
 freertos_variscite:
 	@[ $(SOCFAMILY) != IMX -o $(DISTROVARIANT) = base -o $(DISTROVARIANT) = tiny -o $(FREERTOS_SUPPORT) = false ] && exit || \
 	$(call fbprint_b,"freertos_variscite") && \
-	$(call repo-mngr,fetch,freertos_variscite,apps/utils) && \
+	git clone $(repo_freertos_variscite_url) --no-checkout $(PKGDIR)/apps/utils/freertos_variscite && \
+	cd $(PKGDIR)/apps/utils/freertos_variscite && \
+	git checkout $(FREERTOS_COMMIT) && \
 	$(call repo-mngr,fetch,meta_variscite_bsp_imx) && \
 	export ARMGCC_DIR=$(PKGDIR)/apps/utils/cortexm_toolchain_cross && \
 	if [ ! -d $(PKGDIR)/$$ARMGCC_DIR/bin/arm-none-eabi-gcc ]; then \
-	 	bld cortexm_toolchain_cross -r $(DISTROTYPE):$(DISTROVARIANT) -a $(DESTARCH); \
+	 	bld cortexm_toolchain_cross -r $(DISTROTYPE):$(DISTROVARIANT) -a $(DESTARCH) -m ${MACHINE}; \
 	fi && \
 	mkdir -p $(PKGDIR)/apps/utils/freertos_variscite && \
 	cd $(PKGDIR)/apps/utils/freertos_variscite && \
@@ -64,4 +66,8 @@ freertos_variscite:
 			done; \
 		done; \
 	done && \
+	if [ $${MACHINE:0:5} = imx93 ]; then \
+		cd $(DESTDIR)/usr/lib/firmware/ && \
+		ln -s cm_ethosu_apps_rpmsg.elf.release ethosu_firmware; \
+	fi && \
 	$(call fbprint_d,"freertos_variscite")
