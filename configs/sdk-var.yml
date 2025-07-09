@@ -71,6 +71,8 @@ CONFIG_WESTON: y
 CONFIG_OPENSSL: y
 CONFIG_PYTORCH: y
 
+VARSOM: y
+
 # Linux kernel version
 LINUX_VERSION_EXTENSION: -var-lts-next
 

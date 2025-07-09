@@ -7,9 +7,11 @@
 # COMPATIBLE_MACHINE: imx93
 
 ethosu_firmware:
+ifneq ($(strip $(subst ",,$(VARSOM))),y)
 	@[ $(SOCFAMILY) != IMX -o $(DISTROVARIANT) = tiny -o $(DISTROVARIANT) = base ] && exit || \
 	 $(call fbprint_b,"ethosu_firmware") && \
 	 $(call repo-mngr,fetch,ethosu_firmware,apps/ml) && \
 	 cd $(MLDIR)/ethosu_firmware && \
 	 cp -f ethosu_firmware $(DESTDIR)/usr/lib/ && \
 	 $(call fbprint_d,"ethosu_firmware")
+endif
