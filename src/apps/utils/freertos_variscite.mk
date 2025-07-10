@@ -35,6 +35,24 @@ freertos_variscite:
 		done ; \
 	done && \
 	RPROC_DIR="$(PKGDIR)/meta_variscite_bsp_imx/recipes-bsp/freertos-variscite/freertos-variscite" && \
+	if [ -n "$(DISABLE_CACHE_PATCH)" ] && [ ! -f $(PKGDIR)/apps/utils/freertos_variscite/.patchdone ]; then \
+		cp -r $(PKGDIR)/apps/utils/freertos_variscite/boards/${CM_BOARD}/demo_apps/hello_world/ $(PKGDIR)/apps/utils/freertos_variscite/boards/${CM_BOARD}/demo_apps/disable_cache && \
+		grep -rl hello_world $(PKGDIR)/apps/utils/freertos_variscite/boards/${CM_BOARD}/demo_apps/disable_cache | xargs sed -i 's/hello_world/disable_cache/g' && \
+		find $(PKGDIR)/apps/utils/freertos_variscite/boards/${CM_BOARD}/demo_apps/disable_cache/ -name '*hello_world*' -exec sh -c 'mv "$$1" "$$(echo "$$1" | sed s/hello_world/disable_cache/)"' _ {} \; ; \
+		$(call fbprint_n,"Applying freertos_variscite disable_cache patch $(PKGDIR)/apps/utils/freertos_variscite/patches/$(DISABLE_CACHE_PATCH) for $(MACHINE)") && \
+		cd $(PKGDIR)/apps/utils/freertos_variscite && \
+		git am $$RPROC_DIR/$(MACHINE)/$(DISABLE_CACHE_PATCH) && \
+		touch .patchdone && \
+		for CM_DEMO in $(CM_DEMOS_DISABLE_CACHE); do \
+			DIR_GCC=$$DEMOS_PATH/$$CM_DEMO/armgcc; \
+			cd $$DIR_GCC && \
+				./clean.sh && \
+			if [ `grep -q "make -j" build_all.sh` ]; then \
+				sed -i "s/make -j.*[0-9]*/make 28/g" build_all.sh; \
+			fi && \
+			LDFLAGS="" CFLAGS="" CXXFLAGS="" ./build_all.sh > /dev/null; \
+		done ; \
+	fi; \
 	install -d $(DESTDIR)/etc/remoteproc && \
 	install -m 0755 $$RPROC_DIR/variscite-rproc-u-boot $(DESTDIR)/etc/remoteproc && \
 	install -m 0755 $$RPROC_DIR/variscite-rproc-linux $(DESTDIR)/etc/remoteproc	&& \
@@ -66,6 +84,13 @@ freertos_variscite:
 			done; \
 		done; \
 	done && \
+	for CM_DEMO in $(CM_DEMOS_DISABLE_CACHE); do \
+		DIR_GCC=$$DEMOS_PATH/$$CM_DEMO/armgcc; \
+		CM_BUILD_TARGET="debug"; \
+		FW_BASENAME=`basename $$DIR_GCC/$$CM_BUILD_TARGET/*.elf .elf` && \
+		FILE_CM_FW="$$FW_BASENAME.elf" && \
+		install -m 644 $$DIR_GCC/$$CM_BUILD_TARGET/$$FILE_CM_FW $(DESTDIR)/usr/lib/firmware/cm_$$FILE_CM_FW.$$CM_BUILD_TARGET; \
+	done ; \
 	if [ $${MACHINE:0:5} = imx93 ]; then \
 		cd $(DESTDIR)/usr/lib/firmware/ && \
 		ln -s cm_ethosu_apps_rpmsg.elf.release ethosu_firmware; \
