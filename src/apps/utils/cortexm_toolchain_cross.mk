@@ -7,8 +7,17 @@ cortexm_toolchain_cross:
 		mkdir -p $(PKGDIR)/apps/utils/cortexm_toolchain_cross; \
 	fi && \
 	cd $(PKGDIR)/apps/utils/cortexm_toolchain_cross && \
-	if [ ! -f arm-gnu-toolchain-${CM_GCC}-x86_64-arm-none-eabi.tar.xz ]; then \
-		wget https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu/${CM_GCC}/binrel/arm-gnu-toolchain-${CM_GCC}-x86_64-arm-none-eabi.tar.xz && \
-		tar -xf arm-gnu-toolchain-${CM_GCC}-x86_64-arm-none-eabi.tar.xz --strip-components=1; \
+	if [ "$${CM_GCC#*rel}" != "${CM_GCC}" ]; then \
+		if [ ! -f arm-gnu-toolchain-${CM_GCC}-x86_64-arm-none-eabi.tar.xz ]; then \
+			wget https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu/${CM_GCC}/binrel/arm-gnu-toolchain-${CM_GCC}-x86_64-arm-none-eabi.tar.xz && \
+			tar -xf arm-gnu-toolchain-${CM_GCC}-x86_64-arm-none-eabi.tar.xz --strip-components=1; \
+		fi \
+	elif [ ! -f gcc-arm-none-eabi-${CM_GCC}-x86_64-linux.tar.bz2 ]; then \
+		if [ "$${CM_GCC#*q}" != "${CM_GCC}" ]; then \
+			wget https://developer.arm.com/-/media/Files/downloads/gnu-rm/$${CM_GCC:0:6}$${CM_GCC:7:2}/gcc-arm-none-eabi-${CM_GCC}-x86_64-linux.tar.bz2; \
+		else \
+			wget https://developer.arm.com/-/media/Files/downloads/gnu-rm/${CM_GCC}/gcc-arm-none-eabi-${CM_GCC}-x86_64-linux.tar.bz2; \
+		fi && \
+		tar -xf gcc-arm-none-eabi-${CM_GCC}-x86_64-linux.tar.bz2 --strip-components=1; \
 	fi && \
 	$(call fbprint_d,"cortexm_toolchain_cross")
