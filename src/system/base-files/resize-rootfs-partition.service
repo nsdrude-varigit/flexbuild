@@ -1,0 +1,13 @@
+[Unit]
+Description=Resize root partition on first boot
+After=local-fs.target
+DefaultDependencies=no
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/resize-rootfs-partition.sh
+ExecStartPost=systemctl disable resize-rootfs-partition.service
+RemainAfterExit=true
+
+[Install]
+WantedBy=multi-user.target
