@@ -19,12 +19,16 @@ jobs:
           - imx95-var-dart
           - imx93-var-som
           - imx8qxp-var-som
+        rootfs:
+          - desktop
     uses: varigit-dev/action-workflows/.github/workflows/flexbuild.yml@dev_flexbuild
     with:
       flexbuild-ref: ${{ github.sha }}
       debian-version: 12
       debian-version-name: bookworm
       machine: ${{ matrix.machine }}
+      rootfs: ${{ matrix.rootfs }}
+
     secrets:
       DO_SPACES_KEY:     ${{ secrets.DO_SPACES_KEY }}
       DO_SPACES_SECRET:  ${{ secrets.DO_SPACES_SECRET }}
