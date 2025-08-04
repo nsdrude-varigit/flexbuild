@@ -99,6 +99,18 @@ extra_server_devel_packages=" \
     libjpeg62-turbo-dev \
     libjsoncpp-dev \
     udhcpd \
+    \
+    libbsd-dev \
+    libbz2-dev \
+    libcurl4-openssl-dev \
+    librsvg2-dev \
+    libgtk-3-dev \
+    libmp3lame-dev \
+    libopencore-amrnb-dev \
+    libopencore-amrwb-dev \
+    libpulse-dev \
+    libspeex-dev x264 \
+    libtag1-dev \
 "
 
 extra_desktop_devel_packages=" \
