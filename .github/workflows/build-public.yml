@@ -1,0 +1,212 @@
+# SPDX-License-Identifier: Variscite-Proprietary-License
+# Copyright 2025 Variscite Ltd.
+#
+# Continuous-integration workflow for Debian image builds.
+# Runs only on public repositories using GitHub’s free hosted runners.
+#
+# The workflow has two high-level phases:
+#   - Prepare a Docker build environment (restore cached image or build it)
+#   - Use that container to compile U-Boot, Linux, rootfs and images
+
+name: Build all machines - Public
+
+on:
+  push:
+    branches:
+      - LSDK-24.12_DEBIAN-12_LF-6.6.36_var01
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-flexbuild:
+    # Skip the entire job if the repository is private
+    if: github.event.repository.private == false
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        machine:
+          - imx8mm-var-dart
+          - imx8mp-var-dart
+          - imx8mn-var-som
+          - imx95-var-dart
+          - imx93-var-som
+          - imx8qxp-var-som
+        rootfs:
+          - server
+          - desktop
+
+    steps:
+      # GitHub-hosted runners expose additional space under /mnt.
+      # Replace the default workspace with a symlink to gain ~30 GB.
+      - name: Setup workspace on GitHub-hosted runner using /mnt with more storage
+        if: "!contains(runner.labels, 'self-hosted')"
+        run: |
+          echo "Redirecting workspace to /mnt/work"
+          sudo mkdir -p /mnt/work
+          sudo rm -rf "$GITHUB_WORKSPACE"
+          sudo ln -s /mnt/work "$GITHUB_WORKSPACE"
+          sudo chown -R $USER:$USER /mnt/work
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Register QEMU for arm64
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: arm64
+
+      # Quick sanity-check on available storage
+      - name: Report disk free space
+        run: |
+          echo "=== Filesystem usage ==="
+          df -h /
+          echo
+          echo "=== /mnt usage ==="
+          df -h /mnt || echo "/mnt not mounted"
+
+      - name: Print build information
+        run: |
+          echo "Building ${{ matrix.machine }}:${{ matrix.rootfs }}"
+          echo "flexbuild reference: ${{ inputs['flexbuild-ref'] }}"
+
+      ############################################################
+      # Prepare Docker build environment
+      ############################################################
+
+      # Ensure the cache directory exists so tar always has something to archive
+      - name: Ensure Docker cache directory exists
+        run: mkdir -p .docker-image-cache
+
+      # Attempt to restore a previously cached fbdebian base image.
+      # The key is the SHA-256 of the Dockerfile; an exact match is required.
+      - name: Restore Docker image cache
+        id: docker-cache
+        uses: actions/cache@v3
+        with:
+          path: .docker-image-cache
+          key: docker-image-${{ runner.os }}-${{ hashFiles('./docker/debian/Dockerfile') }}
+
+      # Load the cached image when available
+      - name: Load cached image (if a hit)
+        if: steps.docker-cache.outputs.cache-hit == 'true'
+        run: |
+          echo "Loading cached base image"
+          docker load -i .docker-image-cache/image.tar
+
+      # Build the container only when the cache is missing
+      - name: Build NXP Docker container
+        if: steps.docker-cache.outputs.cache-hit != 'true'
+        run: |
+          . setup.env || true
+          echo "FBDIR is '$FBDIR'"
+          bld docker || true
+
+      # Save the freshly-built image back into the cache
+      - name: Save Docker image to cache
+        if: steps.docker-cache.outputs.cache-hit != 'true'
+        run: |
+          docker save fbdebian:12 -o .docker-image-cache/image.tar
+
+      # Export container name for subsequent steps
+      - name: Save container name to variable
+        run: |
+          . setup.env || true
+          echo "CONTAINER_NAME=fbdebian" >> $GITHUB_ENV
+
+      # Show current Docker state before launching the container
+      - name: List images and containers pre-run
+        run: |
+          echo "=== Docker images ==="
+          docker images fbdebian || true
+          echo
+          echo "=== Containers before run ==="
+          docker ps -a
+
+      # Launch the privileged build container
+      - name: Run Docker container
+        run: |
+          . setup.env || true
+          echo "Starting container: $CONTAINER_NAME"
+          docker run -d --name "$CONTAINER_NAME" --privileged --net=host \
+            -v "$HOME:$HOME" -v "$FBDIR:$FBDIR" -v /lib/modules:/lib/modules -v /dev:/dev \
+            -v /etc/localtime:/etc/localtime:ro \
+            --add-host=fbdebian:127.0.0.1 \
+            -w "$FBDIR" fbdebian:12 tail -f /dev/null
+
+      # Confirm container launch
+      - name: List images and containers post-run
+        run: |
+          echo "=== Docker images ==="
+          docker images fbdebian || true
+          echo
+          echo "=== Containers after run ==="
+          docker ps -a
+
+      # Quick health-check
+      - name: Run test command inside container
+        run: |
+          docker exec "$CONTAINER_NAME" echo "Container up"
+
+      ############################################################
+      # Build firmware and images inside the container
+      ############################################################
+
+      - name: Install host dependencies
+        run: |
+          docker exec "$CONTAINER_NAME" /bin/bash -c '
+            . setup.env || true
+            time bld host-dep
+          '
+
+      - name: Build U-Boot
+        run: |
+          docker exec "$CONTAINER_NAME" /bin/bash -c '
+            . setup.env || true
+            bld -r debian:${{ matrix.rootfs }} -m ${{ matrix.machine }} -f sdk-var.yml uboot
+          '
+
+      - name: Build Linux
+        run: |
+          docker exec "$CONTAINER_NAME" /bin/bash -c '
+            . setup.env || true
+            bld -r debian:${{ matrix.rootfs }} -m ${{ matrix.machine }} -f sdk-var.yml linux
+          '
+
+      - name: Build root filesystem
+        run: |
+          docker exec "$CONTAINER_NAME" /bin/bash -c '
+            . setup.env || true
+            bld -r debian:${{ matrix.rootfs }} -m ${{ matrix.machine }} -f sdk-var.yml rfs
+          '
+
+      - name: Build applications
+        run: |
+          docker exec "$CONTAINER_NAME" /bin/bash -c '
+            . setup.env || true
+            bld -r debian:${{ matrix.rootfs }} -m ${{ matrix.machine }} -f sdk-var.yml apps
+          '
+
+      - name: Merge applications into rootfs
+        run: |
+          docker exec "$CONTAINER_NAME" /bin/bash -c '
+            . setup.env || true
+            bld -r debian:${{ matrix.rootfs }} -m ${{ matrix.machine }} -f sdk-var.yml merge-apps
+          '
+
+      - name: Merge boot partition and rootfs
+        run: |
+          docker exec "$CONTAINER_NAME" /bin/bash -c '
+            . setup.env || true
+            bld -r debian:${{ matrix.rootfs }} -m ${{ matrix.machine }} -f sdk-var.yml merge-bootpart-rfs
+          '
+
+      - name: Create recovery SD-card image
+        run: |
+          docker exec "$CONTAINER_NAME" /bin/bash -c '
+            . setup.env || true
+            bld -r debian:${{ matrix.rootfs }} -m ${{ matrix.machine }} -f sdk-var.yml create-recovery-sdcard-image
+          '
