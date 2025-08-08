@@ -388,6 +388,11 @@ create_recovery_sdcard_image() {
 	exit 1
 	fi
 
+        if echo "$GENIMAGE_CFG" | grep -q "bootpartition"; then
+                RECOVERY_SDCARD_BOOTDIR=$(mktemp -d "$RFSDIR/../${IMAGE_NAME}.tmp-XXXXXX")
+                find "$FBOUTDIR/images/boot_${SOCFAMILY}_${DESTARCH}" -maxdepth 1 -type f -exec cp -t "$RECOVERY_SDCARD_BOOTDIR" {} +
+        fi
+
 	# Extract the rootfs to a temporary directory
 	RECOVERY_SDCARD_RFSDIR=$(mktemp -d "$RFSDIR/../${IMAGE_NAME}.tmp-XXXXXX")
 	tar -I zstd -xpf "${ROOTFS_ARCHIVE}" -C "$RECOVERY_SDCARD_RFSDIR"
@@ -406,7 +411,7 @@ create_recovery_sdcard_image() {
 		--config     "$GENIMAGE_CFG_FILE"
 
 	# Cleanup
-	rm -rf $GENIMAGE_CFG_FILE $RECOVERY_SDCARD_RFSDIR
+	rm -rf $GENIMAGE_CFG_FILE $RECOVERY_SDCARD_RFSDIR $RECOVERY_SDCARD_RFSDIR
 	mv $FBOUTDIR/images/recovery-sd.img $IMAGE_PATH
 
 	# Create final image archive and bmap file
