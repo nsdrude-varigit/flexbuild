@@ -46,7 +46,7 @@ linux:
 	fi && \
 	$(MAKE) -j$(JOBS) all -C $(KERNEL_PATH) O=$$opdir && \
 	if [ $(DESTARCH) = arm32 ]; then \
-	    $(MAKE) -j$(JOBS) uImage LOADADDR=80008000 -C $(KERNEL_PATH) O=$$opdir; \
+	    $(MAKE) -j$(JOBS) uImage LOADADDR=10008000 -C $(KERNEL_PATH) O=$$opdir; \
 	fi && \
 	if [ $(DESTARCH) = arm32 -o $(DESTARCH) = arm64 ]; then \
 	    $(MAKE) zinstall \
