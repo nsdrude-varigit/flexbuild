@@ -941,7 +941,7 @@ export CONFIGLIST CFGLISTYML
 [ -z "$MACHINE" ] && MACHINE=all
 [ "${MACHINE:0:7}" = "ls1021a" ] && DESTARCH=arm32
 
-if echo $MACHINE | grep -Eq 'imx6|imx7'; then
+if echo $MACHINE | grep -Eq 'mx6|mx7'; then
     DESTARCH=arm32 && SOCFAMILY=IMX
 elif `echo $MACHINE | grep -qE 'imx8|imx9'`; then
     DESTARCH=arm64 && SOCFAMILY=IMX
