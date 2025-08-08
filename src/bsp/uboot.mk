@@ -8,6 +8,7 @@
 include imx_mkimage.mk
 
 UBOOT_INITIAL_ENV = "u-boot-initial-env"
+UBOOT_IMX_BINARY ?= "u-boot-dtb.imx"
 
 uboot u-boot:
 	@$(call repo-mngr,fetch,uboot,bsp) && \
@@ -76,7 +77,7 @@ define build-uboot-target
 	    bld atf -m $(MACHINE) -b sd && \
 	    $(call imx_mkimage_target, $1) \
 	elif echo $1 | grep -qiE "mx6|mx7"; then \
-	    cp $$opdir/u-boot-dtb.imx $(FBOUTDIR)/bsp/u-boot/$$brd/; \
+	    cp $$opdir/$(UBOOT_IMX_BINARY) $(FBOUTDIR)/bsp/u-boot/$$brd/; \
 	else \
 	    cp $$opdir/$$srcbin $(FBOUTDIR)/bsp/u-boot/$$brd/$$tgtbin ; \
 	fi && \
