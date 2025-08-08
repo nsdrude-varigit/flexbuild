@@ -1037,8 +1037,6 @@ else
     DESTDIR=$FBOUTDIR/apps/apps_${DESTARCH}_${DISTROTYPE}_${DISTROVARIANT}
 fi
 
-[ $DESTARCH = arm32 -a $DISTROVARIANT = desktop ] && echo $DISTROTYPE desktop supports only arm64 && exit
-
 linux_itb=$FBOUTDIR/images/${DISTRIB_VERSION}_${DISTROTYPE}_${DISTROVARIANT}_${SOCFAMILY}_${DESTARCH}.itb
 tiny_itb=$FBOUTDIR/images/${DISTRIB_VERSION}_poky_tiny_${SOCFAMILY}_${DESTARCH}.itb
 base_itb=$FBOUTDIR/images/${DISTRIB_VERSION}_debian_base_${SOCFAMILY}_${DESTARCH}.itb
