@@ -5,9 +5,10 @@
 
 # Variscite Openthread - iwxxx_spi
 
+CONNECTIVITY_OPENTHREAD_IWXXX_SPI ?= true
 
 openthread_iwxxx_spi:
-	@[ $(SOCFAMILY) != IMX -o $(DISTROVARIANT) = base -o $(DISTROVARIANT) = tiny ] && exit || \
+	@[ $(SOCFAMILY) != IMX -o $(DISTROVARIANT) = base -o $(DISTROVARIANT) = tiny -o $(CONNECTIVITY_OPENTHREAD_IWXXX_SPI) = false ] && exit || \
 	$(call fbprint_b,"openthread_iwxxx_spi") && \
 	$(call repo-mngr,fetch,openthread_iwxxx_spi,apps/connectivity) && \
 	SOURCE="$(PKGDIR)/apps/connectivity/openthread_iwxxx_spi" && \

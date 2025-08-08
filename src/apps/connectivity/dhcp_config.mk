@@ -5,8 +5,6 @@
 # Network configuration file that enables DHCP for dynamic IP
 # assignment on network interfaces.
 
-
-
 dhcp_config:
 	@[ $(SOCFAMILY) != IMX -o $(DISTROVARIANT) = base -o $(DISTROVARIANT) = tiny ] && exit || \
 	$(call fbprint_b,"dhcp_config") && \

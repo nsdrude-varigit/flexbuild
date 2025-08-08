@@ -4,10 +4,10 @@
 
 
 # Variscite Openthread
-
+CONNECTIVITY_OPENTHREAD ?= true
 
 openthread:
-	@[ $(SOCFAMILY) != IMX -o $(DISTROVARIANT) = base -o $(DISTROVARIANT) = tiny ] && exit || \
+	@[ $(SOCFAMILY) != IMX -o $(DISTROVARIANT) = base -o $(DISTROVARIANT) = tiny -o $(CONNECTIVITY_OPENTHREAD) = false ] && exit || \
 	$(call fbprint_b,"openthread") && \
 	$(call repo-mngr,fetch,openthread,apps/connectivity) && \
 	SOURCE="$(PKGDIR)/apps/connectivity/openthread" && \

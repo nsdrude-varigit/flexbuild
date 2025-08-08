@@ -4,10 +4,10 @@
 
 
 # Variscite WiFi + Bluetooth
-
+CONNECTIVITY_VAR_BLUEZ5 ?= true
 
 var_bluez5_conf:
-	@[ $(SOCFAMILY) != IMX -o $(DISTROVARIANT) = base -o $(DISTROVARIANT) = tiny ] && exit || \
+	@[ $(SOCFAMILY) != IMX -o $(DISTROVARIANT) = base -o $(DISTROVARIANT) = tiny -o $(CONNECTIVITY_VAR_BLUEZ5) = false ] && exit || \
 	$(call fbprint_b,"var_bluez5_conf") && \
 	$(call repo-mngr,fetch,meta_variscite_bsp_common) && \
 	BLUEZ_DIR="$(PKGDIR)/meta_variscite_bsp_common/recipes-connectivity/bluez5/files" && \
