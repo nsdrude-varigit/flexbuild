@@ -1,0 +1,191 @@
+# Copyright 2022-2024 NXP
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+# Shengzhou Liu <shengzhou.liu@nxp.com>
+#
+# Customized Debian desktop rootfs for NXP i.MX & Layerscape MPU platforms
+
+
+---
+mmdebstrap:
+  architectures:
+    - armhf
+  mode: auto
+  keyrings:
+    - /usr/share/keyrings/debian-archive-keyring.gpg
+  mirrors:
+    - http://deb.debian.org/debian
+    - http://ftp.us.debian.org/debian
+    - http://ftp.de.debian.org/debian
+    - 'deb http://deb.debian.org/debian bookworm-backports main'
+  suite: bookworm
+  target: rootfs
+  hostname: ${MACHINE}
+  variant: standard
+  components:
+    - main
+    - contrib
+  aptopts:
+    - 'Apt::Install-Recommends "true";'
+  packages:
+    - init
+    - udev
+    - sudo
+    - vim
+    - apt
+    - file
+    - zstd
+    - parted
+    - fdisk
+    - dosfstools
+    - iputils-ping
+    - isc-dhcp-client
+    - memtool
+    - wget
+    - curl
+    - ca-certificates
+    - systemd
+    - systemd-sysv
+    - psmisc   # for fuser, killall, etc
+    - ethtool
+    - net-tools
+    - iproute2
+    - openssh-server
+    - openssh-client
+    - patchelf
+    - htop
+    - cpuinfo
+    - util-linux
+    - lshw
+    - keyutils
+    - wpasupplicant
+    - ntpdate
+    - bridge-utils
+    - tcpdump
+    - mtd-utils
+    - pciutils
+    - hdparm psmisc
+    - libssl-dev
+    - usbutils # for lsusb
+    - sysstat
+    - lsb-release
+    - kexec-tools
+    - iptables
+    - libhugetlbfs0
+    - strongswan
+    - libcharon-extra-plugins
+    - dmidecode
+    - flex
+    - rdate
+    - initramfs-tools
+    - fbset
+    - mmc-utils
+    - usbutils
+    - i2c-tools
+    - lm-sensors
+    - rt-tests
+    - linuxptp
+    - mosquitto
+    - xterm
+    - bluez
+    - pipewire
+    - pipewire-audio
+    - pipewire-pulse
+    - wireplumber
+    - libspa-0.2-bluetooth
+    - libinput-tools
+    - libqt6core6
+    - glmark2-es2-wayland
+    - wayland-utils
+    - libgles2-mesa
+    - clinfo
+    - v4l-utils
+    - mesa-utils
+    - alsa-utils
+    - dmz-cursor-theme
+    - u-boot-tools
+    - qemu-user-static
+    - xwayland
+    - can-utils
+    - pm-utils
+    - bluez-alsa-utils
+    - bluez-obexd
+    - expect
+    - systemd-resolved
+    - hostapd
+    - screen
+    - python3-dbus
+    - xfce4
+    - xfdesktop4
+    - xfce4-session
+    - xinit
+    - xserver-xorg-core
+    - thunar
+    - xfce4-terminal
+    - lightdm
+  setup-hooks:
+      # Setup NXP board-specific configurations for various platforms
+    - 'mkdir -p $1/usr/local/bin $1/etc/udev/rules.d $1/etc/modprobe.d'
+    - 'mkdir -p $1/etc/systemd/system/multi-user.target.wants'
+    - 'mkdir -p $1/etc/systemd/system/graphical.target.wants'
+    - 'mkdir -p $1/etc/systemd/system/local-fs.target.wants'
+      # Setup var apt server(s)
+    - 'mkdir -p $1/etc/apt/sources.list.d'
+    - 'printf "deb [trusted=yes] https://varigit.github.io/var-debpkgs/var bookworm main\n" >> $1/etc/apt/sources.list.d/var.list'
+  essential-hooks:
+    - 'sleep 10'
+  customize-hooks:
+    - 'chroot "$1" apt purge -y apache2-bin'
+    - 'chroot "$1" useradd -m -d /home/debian -s /bin/bash debian'
+    - 'chroot "$1" gpasswd -a debian sudo'
+    - 'chroot "$1" usermod -aG sudo debian'
+    - 'chroot "$1" passwd --delete root'
+    - 'chroot "$1" passwd --delete debian'
+    - 'chroot "$1" apt-get update'
+    - 'rm -f $1/etc/resolv.conf'
+    - 'echo "nameserver 8.8.8.8 # Google DNS" > $1/etc/resolv.conf'
+    - 'echo "nameserver 1.1.1.1 # Cloudflare DNS" >> $1/etc/resolv.conf'
+    - 'chroot "$1" cp /etc/skel/.bashrc ~/.bashrc'
+    - 'chroot "$1" echo "PermitRootLogin yes" >> $1/etc/ssh/sshd_config'
+    - 'chroot "$1" echo "PermitEmptyPasswords yes" >> $1/etc/ssh/sshd_config'
+    - 'cp tools/flex-installer $1/usr/bin/'
+    - 'cp tools/resizerfs $1/usr/bin/'
+    - 'cp src/system/udev/udev-rules-*/*.rules $1/etc/udev/rules.d/'
+    - 'cp src/system/distroplatcfg $1/usr/bin/'
+    - 'cp src/system/platcfg.service $1/lib/systemd/system/'
+    - 'cp src/system/blacklist.conf $1/etc/modprobe.d/'
+    - 'cp src/system/ts.conf $1/etc/'
+    - 'chroot "$1" ln -s /lib/systemd/system/platcfg.service /etc/systemd/system/multi-user.target.wants/platcfg.service'
+    # Enable systemd-networkd and related services in the chroot environment
+    # to ensure network configuration and availability at boot.
+    - 'chroot "$1" ln -s /lib/systemd/system/systemd-networkd.service /etc/systemd/system/dbus-org.freedesktop.network1.service'
+    - 'chroot "$1" ln -s /lib/systemd/system/systemd-networkd.service /etc/systemd/system/multi-user.target.wants/systemd-networkd.service'
+    - 'chroot "$1" ln -s /lib/systemd/system/systemd-network-generator.service /etc/systemd/system/sysinit.target.wants/systemd-network-generator.service'
+    - 'chroot "$1" ln -s /lib/systemd/system/systemd-networkd-wait-online.service /etc/systemd/system/network-online.target.wants/systemd-networkd-wait-online.service'
+    # Disable tty1 to run weston service
+    - 'chroot "$1" rm /etc/systemd/system/getty.target.wants/getty@tty1.service'
+    - 'chroot "$1" ln -s /boot/tools/perf /usr/local/bin/perf'
+    - 'chroot "$1" ln -s /sbin/init /init'
+    - 'cp src/system/pm-utils/divert-sleep-scripts.sh $1/root/'
+    - 'chroot "$1" chmod +x /root/divert-sleep-scripts.sh'
+    - 'chroot "$1" /root/divert-sleep-scripts.sh'
+    - 'rm $1/root/divert-sleep-scripts.sh'
+    - 'chroot "$1" rm -rf /usr/lib/pm-utils/sleep.d'
+    - 'chroot "$1" ln -sf /bin/busybox /bin/usleep'
+    - 'chroot "$1" ln -sf /usr/bin/busybox /usr/bin/devmem'
+    - 'cp --remove-destination src/system/weston/wallpaper.png $1/usr/share/images/desktop-base/desktop-background'
+    - 'cp src/system/gpuconfig $1/etc/'
+    - 'cp src/system/gpuconfig.service $1/lib/systemd/system/'
+    - 'cp src/system/lightdm.conf $1/etc/lightdm/lightdm.conf'
+    - 'cp src/system/10-monitor.conf $1/etc/X11/xorg.conf.d/10-monitor.conf'
+    - 'sed -i "/pam_succeed_if\.so.*user[[:space:]]*!=[[:space:]]*root.*quiet_success/ s/^/#/" $1/etc/pam.d/lightdm-autologin'
+    - 'chroot "$1" ln -s /lib/systemd/system/gpuconfig.service /etc/systemd/system/graphical.target.wants/gpuconfig.service'
+    - 'chroot "$1" ln -s /usr/lib/systemd/system/graphical.target /etc/systemd/system/default.target'
+    - 'chroot "$1" systemctl disable hostapd'
+    - 'printf "COGL_DRIVER=gles2\nCLUTTER_DRIVER=gles2\nQT_QPA_PLATFORM=wayland\nGDK_GL=gles" >> $1/etc/environment'
+    - 'printf "/usr/lib\n" >> $1/etc/ld.so.conf.d/01-sdk.conf'
+    - 'printf " * Support:   https://www.nxp.com/support\n" >> $1/etc/update-motd.d/20-help-text'
+    - 'printf " * Licensing: https://lsdk.github.io/eula\n" >> $1/etc/update-motd.d/20-help-text'
+    - 'printf "NXP Linux SDK 2412 Debian Desktop (optimized with NXP-specific hardware acceleration)\n" >> $1/etc/issue'
+    - 'printf "Build: `date --rfc-3339 seconds`\n" >> $1/etc/buildinfo'
