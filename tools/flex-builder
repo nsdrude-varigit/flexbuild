@@ -405,8 +405,8 @@ create_recovery_sdcard_image() {
 	. $GENIMAGE_CFG
 	printf '%s\n' "$RECOVERY_SD_GENIMAGE_CFG" > "$GENIMAGE_CFG_FILE"
 	genimage \
-		--rootpath   "$WORKDIR/rootfs" \
-		--inputpath  "$WORKDIR" \
+		--rootpath   "$RECOVERY_SDCARD_RFSDIR" \
+		--inputpath  "$FBOUTDIR/images" \
 		--outputpath "$FBOUTDIR/images" \
 		--config     "$GENIMAGE_CFG_FILE"
 
