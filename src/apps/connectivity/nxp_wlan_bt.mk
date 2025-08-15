@@ -6,10 +6,10 @@
 # NXP WiFi + Bluetooth SDK for IW612, W8997, W8987, W9098, etc
 
 # https://www.nxp.com/products/wireless/wi-fi-plus-bluetooth
-
+NXP_WLAN_BT ?= true
 
 nxp_wlan_bt:
-	@[ $(SOCFAMILY) != IMX -o $(DISTROVARIANT) = base -o $(DISTROVARIANT) = tiny ] && exit || \
+	@[ $(SOCFAMILY) != IMX -o $(DISTROVARIANT) = base -o $(DISTROVARIANT) = tiny -o $(NXP_WLAN_BT) = false ] && exit || \
 	 $(call fbprint_b,"nxp_wlan_bt") && \
 	 $(call repo-mngr,fetch,linux,linux) 1>/dev/null && \
 	 $(call repo-mngr,fetch,nxp_wlan_bt,apps/connectivity) && \
