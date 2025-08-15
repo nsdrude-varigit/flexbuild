@@ -7,9 +7,10 @@
 
 # isp_vvcam_module/vvcam/readme_v4l2.txt
 
+ISP_VVCAM_MODULE ?= true
 
 isp_vvcam_module:
-	@[ $(SOCFAMILY) != IMX ] && exit || \
+	@[ $(SOCFAMILY) != IMX -o $(ISP_VVCAM_MODULE) = false ] && exit || \
 	 $(call repo-mngr,fetch,isp_vvcam_module,linux) && \
 	 $(call repo-mngr,fetch,$(KERNEL_TREE),linux) && \
 	 \
