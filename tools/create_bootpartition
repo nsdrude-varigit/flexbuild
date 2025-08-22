@@ -52,6 +52,7 @@ generate_bootpartition() {
 	[ ! -d $FBOUTDIR/bsp/imx_mcore_demos/imx93-m33-demo ] && bld mcore_demo -a $DESTARCH -p $SOCFAMILY
 	[ ! -d $DESTDIR/usr/lib/ethosu_firmware ] && [ $PKG_GROUPS_ML = "y" ] && bld ethosu_firmware -a $DESTARCH -p $SOCFAMILY
 	[ ! -d $FBOUTDIR/bsp/brcm_firmware/lib/firmware ] && bld brcm_firmware -a $DESTARCH -p $SOCFAMILY
+	[ ! -d $FBOUTDIR/bsp/wl18xx_firmware/lib/firmware ] && bld wl18xx_firmware -a $DESTARCH -p $SOCFAMILY
 
     [ -d $FBOUTDIR/bsp/imx_firmware/lib/firmware ] && \
         cp -Prf $FBOUTDIR/bsp/imx_firmware/lib/firmware/* $bootpartdir/firmware || echo "Directory not found: $FBOUTDIR/bsp/imx_firmware/lib/firmware"
@@ -61,6 +62,8 @@ generate_bootpartition() {
         cp -Prf $FBOUTDIR/bsp/brcm_firmware/lib/firmware/* $bootpartdir/firmware || echo "Directory not found: $FBOUTDIR/bsp/brcm_firmware/lib/firmware"
     [ -d $FBOUTDIR/bsp/iw612_firmware/lib/firmware/nxp ] && \
         cp -Prf $FBOUTDIR/bsp/iw612_firmware/lib/firmware/* $bootpartdir/firmware || echo "Directory not found: $FBOUTDIR/bsp/iw612_firmware/lib/firmware"
+    [ -d $FBOUTDIR/bsp/wl18xx_firmware/lib/firmware/ti-connectivity ] && \
+        cp -Prf $FBOUTDIR/bsp/wl18xx_firmware/lib/firmware/* $bootpartdir/firmware || echo "Directory not found: $FBOUTDIR/bsp/wl18xx_firmware/lib/firmware"
     fi
 
     # install distro boot script
