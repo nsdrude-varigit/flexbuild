@@ -10,9 +10,10 @@
 # depends on gstreamer1.0 gstreamer1.0-plugins-base libcanberra gtk4 clutter-1.0 clutter-gst-3.0
 #	  libclutter-gtk-1.0-dev vala-native gnome-desktop libxml2-native gdk-pixbuf-native itstool-native
 
+MULTIMEDIA_CHEESE ?= true
 
 cheese:
-	@[ $(DISTROVARIANT) != desktop -o $(SOCFAMILY) != IMX ] && exit || \
+	@[ $(DISTROVARIANT) != desktop -o $(SOCFAMILY) != IMX -o $(MULTIMEDIA_CHEESE) = false ] && exit || \
 	 $(call fbprint_b,"cheese") && \
 	 $(call repo-mngr,fetch,cheese,apps/multimedia) && \
 	 cd $(MMDIR)/cheese && \
