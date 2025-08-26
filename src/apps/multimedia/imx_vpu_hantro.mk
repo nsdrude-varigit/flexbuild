@@ -7,9 +7,10 @@
 
 # RDEPEND: imx_vpu_hantro_daemon
 
+IMX_VPU_SUPPORT ?= true
 
 imx_vpu_hantro:
-	@[ $(DISTROVARIANT) != desktop -o $(SOCFAMILY) != IMX ] && exit || \
+	@[ $(DISTROVARIANT) != desktop -o $(SOCFAMILY) != IMX -o $(IMX_VPU_SUPPORT) = false ] && exit || \
 	 $(call fbprint_b,"imx_vpu_hantro") && \
 	 cd $(MMDIR) && \
 	 if [ ! -d imx_vpu_hantro ]; then \

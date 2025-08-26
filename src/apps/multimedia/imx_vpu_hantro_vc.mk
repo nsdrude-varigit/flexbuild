@@ -5,9 +5,10 @@
 
 # i.MX vc8000e encoder library on imx8mp
 
+IMX_VPU_SUPPORT ?= true
 
 imx_vpu_hantro_vc:
-	@[ $(DISTROVARIANT) != desktop -o $(SOCFAMILY) != IMX ] && exit || \
+	@[ $(DISTROVARIANT) != desktop -o $(SOCFAMILY) != IMX -o $(IMX_VPU_SUPPORT) = false ] && exit || \
 	 $(call fbprint_b,"imx_vpu_hantro_vc") && \
 	 cd $(MMDIR) && \
 	 if [ ! -d imx_vpu_hantro_vc ]; then \

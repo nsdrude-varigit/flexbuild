@@ -5,9 +5,10 @@
 
 # iMX multimedia VPU wrapper
 
+IMX_VPU_SUPPORT ?= true
 
 imx_vpuwrap:
-	@[ $(DISTROVARIANT) != desktop -o $(SOCFAMILY) != IMX ] && exit || \
+	@[ $(DISTROVARIANT) != desktop -o $(SOCFAMILY) != IMX -o $(IMX_VPU_SUPPORT) = false ] && exit || \
 	 $(call fbprint_b,"imx_vpuwrap") && \
 	 $(call repo-mngr,fetch,imx_vpuwrap,apps/multimedia) && \
 	 if [ ! -f $(DESTDIR)/usr/lib/libcodec.so ]; then \
