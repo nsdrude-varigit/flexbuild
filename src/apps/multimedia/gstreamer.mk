@@ -12,10 +12,12 @@
 # depends on libgirepository1.0-dev for GLib-2.0.gir and GObject-2.0.gir on host
 # depends on libgstreamer1.0-dev for /usr/share/gir-1.0/Gst-1.0.gir
 
+GSTREAMER_SUPPORT ?= true
 
 gstreamer:
 	@[ $(SOCFAMILY) != IMX -a $${MACHINE:0:7} != ls1028a -o \
-	   $(DISTROVARIANT) = base -o $(DISTROVARIANT) = tiny ] && exit || \
+	   $(DISTROVARIANT) = base -o $(DISTROVARIANT) = tiny -o \
+	   $(GSTREAMER_SUPPORT) = false ] && exit || \
 	 $(call fbprint_b,"gstreamer") && \
 	 $(call repo-mngr,fetch,gstreamer,apps/multimedia) && \
 	 if [ ! -d $(RFSDIR)/usr/lib/$ARM_LINUX_GNU_TOOLCHAIN ]; then \

@@ -3,11 +3,12 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 
-
+GSTREAMER_SUPPORT ?= true
 
 gst_plugins_good:
 	@[ $(SOCFAMILY) != IMX -a $${MACHINE:0:7} != ls1028a -o \
-	   $(DISTROVARIANT) = base -o $(DISTROVARIANT) = tiny ] && exit || \
+	   $(DISTROVARIANT) = base -o $(DISTROVARIANT) = tiny -o \
+	   $(GSTREAMER_SUPPORT) = false ] && exit || \
 	 $(call fbprint_b,"gst_plugins_good") && \
 	 $(call repo-mngr,fetch,gst_plugins_good,apps/multimedia) && \
 	 cd $(MMDIR)/gst_plugins_good && \

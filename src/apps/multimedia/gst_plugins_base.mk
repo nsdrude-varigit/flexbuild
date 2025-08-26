@@ -10,9 +10,12 @@
 
 # gst version 1.24.0
 
+GSTREAMER_SUPPORT ?= true
+
 gst_plugins_base:
 	@[ $(SOCFAMILY) != IMX -a $${MACHINE:0:7} != ls1028a -o \
-	   $(DISTROVARIANT) = base -o $(DISTROVARIANT) = tiny ] && exit || \
+	   $(DISTROVARIANT) = base -o $(DISTROVARIANT) = tiny -o \
+	   $(GSTREAMER_SUPPORT) = false ] && exit || \
 	 $(call fbprint_b,"gst_plugins_base") && \
 	 $(call repo-mngr,fetch,gst_plugins_base,apps/multimedia) && \
 	 cd $(MMDIR)/gst_plugins_base && \

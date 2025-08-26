@@ -5,11 +5,13 @@
 
 # https://gstreamer.freedesktop.org
 
+GSTREAMER_SUPPORT ?= true
 
 gst_plugins_ugly:
 ifeq ($(CONFIG_GST_PLUGINS_UGLY),y)
 	@[ $(SOCFAMILY) != IMX -a $${MACHINE:0:7} != ls1028a -o \
-	   $(DISTROVARIANT) = base -o $(DISTROVARIANT) = tiny ] && exit || \
+	   $(DISTROVARIANT) = base -o $(DISTROVARIANT) = tiny -o \
+	   $(GSTREAMER_SUPPORT) = false ] && exit || \
 	 $(call fbprint_b,"gst_plugins_ugly") && \
 	 $(call repo-mngr,fetch,gst_plugins_ugly,apps/multimedia) && \
 	 cd $(MMDIR)/gst_plugins_ugly && \
