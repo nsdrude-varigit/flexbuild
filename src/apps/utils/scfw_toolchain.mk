@@ -1,4 +1,7 @@
+SCFW_SUPPORT ?= true
+
 scfw_toolchain:
+	@[ $(SCFW_SUPPORT) = false ] && exit || \
 	$(call fbprint_b,"scfw_toolchain") && \
 	set -x && \
 	if [ ! -d $(PKGDIR)/apps/utils/scfw_toolchain ]; then \
