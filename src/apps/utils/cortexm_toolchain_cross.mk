@@ -1,6 +1,9 @@
 CM_GCC ?= "12.3.rel1"
 
+CORTEXM_TOOLCHAIN_SUPPORT ?= true
+
 cortexm_toolchain_cross:
+	@[ $(CORTEXM_TOOLCHAIN_SUPPORT) = false ] && exit || \
 	$(call fbprint_b,"cortexm_toolchain_cross") && \
 	set -x && \
 	if [ ! -d $(PKGDIR)/apps/utils/cortexm_toolchain_cross ]; then \
