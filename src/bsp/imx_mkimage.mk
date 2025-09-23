@@ -88,9 +88,9 @@ define imx_mkimage_target
 	   $(BSPDIR)/imx_mkimage/iMX93/m33_image.bin; \
     elif echo $1 | grep -qE ^imx95; then \
 	SOC=iMX95; SOC_FAMILY=iMX95; target=$${IMX_MKIMAGE_TARGET:-flash_singleboot}; \
-	cp $(BSPDIR)/fw_ele/mx95a0-ahab-container.img $(BSPDIR)/imx_mkimage/iMX95; \
-	cp $(BSPDIR)/oei/build/mx95lp5/tcm/oei-m33-tcm.bin $(BSPDIR)/imx_mkimage/iMX95; \
-	cp $(BSPDIR)/oei/build/mx95lp5/ddr/oei-m33-ddr.bin $(BSPDIR)/imx_mkimage/iMX95; \
+	cp $(BSPDIR)/fw_ele/mx95b0-ahab-container.img $(BSPDIR)/imx_mkimage/iMX95; \
+	cp $(BSPDIR)/oei/build/mx95-var-dart/tcm/oei-m33-tcm.bin $(BSPDIR)/imx_mkimage/iMX95; \
+	cp $(BSPDIR)/oei/build/mx95-var-dart/ddr/oei-m33-ddr.bin $(BSPDIR)/imx_mkimage/iMX95; \
 	cp $(BSPDIR)/sm/build/mx95evk/m33_image.bin $(BSPDIR)/imx_mkimage/iMX95; \
     fi && \
     cp -f $(BSPDIR)/firmware-imx/firmware/ddr/synopsys/*.bin $(BSPDIR)/imx_mkimage/$$SOC_FAMILY; \
@@ -126,7 +126,7 @@ define imx_mkimage_target
 	$(MAKE) SOC=iMX93 REV=A1 -C iMX93 -f soc.mak $$target; \
     elif [ $${MACHINE:0:5} = imx95 ]; then \
 	cd $(BSPDIR)/imx_mkimage/$$SOC_FAMILY/ && \
-	$(MAKE) REV=A0 OEI=YES LPDDR_TYPE=lpddr5 LPDDR_FUNC=train -f soc.mak $$target && \
+	$(MAKE) REV=B0 OEI=YES LPDDR_TYPE=lpddr5 LPDDR_FUNC=train -f soc.mak $$target && \
 	cd $(BSPDIR)/imx_mkimage; \
     fi && \
     if [ $${MACHINE:0:5} = imx8m ]; then \

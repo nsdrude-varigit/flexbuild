@@ -18,6 +18,6 @@ oei imx-oei:
 	cd $(BSPDIR)/oei && \
 	export OEI_CROSS_COMPILE=$(PKGDIR)/apps/utils/cortexm_toolchain_cross/bin/arm-none-eabi- && \
 	make really-clean && \
-	make board=mx95lp5 DEBUG=0 oei=ddr && \
-	make board=mx95lp5 DEBUG=0 oei=tcm && \
+	make board=mx95-var-dart DEBUG=0 r=B0 oei=ddr && \
+	make board=mx95-var-dart DEBUG=0 r=B0 oei=tcm && \
 	$(call fbprint_d,"IMX OEI for $(MACHINE)")
