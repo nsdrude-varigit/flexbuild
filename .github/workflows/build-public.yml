@@ -84,39 +84,12 @@ jobs:
       # Prepare Docker build environment
       ############################################################
 
-      # Ensure the cache directory exists so tar always has something to archive
-      - name: Ensure Docker cache directory exists
-        run: mkdir -p .docker-image-cache
-
-      # Attempt to restore a previously cached fbdebian base image.
-      # The key is the SHA-256 of the Dockerfile; an exact match is required.
-      - name: Restore Docker image cache
-        id: docker-cache
-        uses: actions/cache@v3
-        with:
-          path: .docker-image-cache
-          key: docker-image-${{ runner.os }}-${{ hashFiles('./docker/debian/Dockerfile') }}
-
-      # Load the cached image when available
-      - name: Load cached image (if a hit)
-        if: steps.docker-cache.outputs.cache-hit == 'true'
-        run: |
-          echo "Loading cached base image"
-          docker load -i .docker-image-cache/image.tar
-
-      # Build the container only when the cache is missing
+      # Build the container from scratch
       - name: Build NXP Docker container
-        if: steps.docker-cache.outputs.cache-hit != 'true'
         run: |
           . setup.env || true
           echo "FBDIR is '$FBDIR'"
           bld docker || true
-
-      # Save the freshly-built image back into the cache
-      - name: Save Docker image to cache
-        if: steps.docker-cache.outputs.cache-hit != 'true'
-        run: |
-          docker save fbdebian:12 -o .docker-image-cache/image.tar
 
       # Export container name for subsequent steps
       - name: Save container name to variable
