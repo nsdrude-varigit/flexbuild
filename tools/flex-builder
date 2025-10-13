@@ -488,6 +488,12 @@ merge_bootpart_rfs() {
     cp -r $RFSDIR/boot/firmware/* $RFSDIR/lib/firmware
     cp -r $RFSDIR/boot/modules $RFSDIR/lib/modules
     rm -r $RFSDIR/boot/firmware $RFSDIR/boot/modules
+
+    # Run simple post rootfs commands
+    if [[ -n ${ROOTFS_POST_CMD:-} ]]; then
+        eval "$ROOTFS_POST_CMD"
+    fi
+
     pack_distro_rfs
 }
 
