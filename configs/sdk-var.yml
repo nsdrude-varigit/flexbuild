@@ -82,11 +82,11 @@ repo:
 # BSP component repositories
   atf:
     url:  https://github.com/varigit/imx-atf.git
-    commit: 3b57a2b9cc3bb103f7ed5d044b1d1a8fcf3a42f6
+    commit: 1fd46eeb2c4f30e48ace97c8929033eabe6ac107
 
   uboot:
     url:  https://github.com/varigit/uboot-imx.git
-    commit: df4294afa29d98060fe05290942a76e0d3dfb16c
+    commit: 34d2f2bac5c0e08da56caa31f6a559748c11fcb9
 
   rcw:
     url:  https://github.com/nxp-qoriq/rcw.git
@@ -123,7 +123,7 @@ repo:
 
   imx_mkimage:
     url:  https://github.com/nxp-imx/imx-mkimage.git
-    commit: 71b8c18af93a5eb972d80fbec290006066cff24f
+    commit: 4c2e5b25232f5aa003976ddca9d1d2fb9667beb1
 
   seco_bin:
     url:  https://www.nxp.com/lgfiles/NMG/MAD/YOCTO/imx-seco-5.9.4.1-0333596.bin
@@ -132,12 +132,12 @@ repo:
     url:  https://www.nxp.com/lgfiles/NMG/MAD/YOCTO/imx-sc-firmware-1.17.0-83624b9.bin
 
   firmware_imx_bin:
-    url:  https://www.nxp.com/lgfiles/NMG/MAD/YOCTO/firmware-imx-8.26-d4c33ab.bin
+    url:  https://www.nxp.com/lgfiles/NMG/MAD/YOCTO/firmware-imx-8.28-994fa14.bin
     # /lib/firmware for ddr,hdmi,dp,vpu,easrc,epdc,xcvr,xuvi
 
   imx_firmware:
     url:  https://github.com/NXP/imx-firmware.git
-    tag:  lf-6.6.52-2.2.0
+    tag:  lf-6.12.20-2.0.0
     # firmware for wifi/bt
 
   brcm_lwb_firmware:
@@ -147,7 +147,7 @@ repo:
     url: https://github.com/Ezurio/SonaIF-Release-Packages/releases/download/LRD-REL-12.29.0.22/summit-lwb5-fcc-firmware-12.29.0.22.tar.bz2
 
   fw_ele_bin:
-    url:  https://www.nxp.com/lgfiles/NMG/MAD/YOCTO/firmware-ele-imx-1.3.0-17945fc.bin
+    url:  https://www.nxp.com/lgfiles/NMG/MAD/YOCTO/firmware-ele-imx-2.0.2-89161a8.bin
 
   fw_upower_bin:
     url:  https://www.nxp.com/lgfiles/NMG/MAD/YOCTO/firmware-upower-1.3.1.bin
@@ -167,11 +167,11 @@ repo:
 # kernel and modules git repositories
   linux:
     url:  https://github.com/varigit/linux-imx.git
-    commit:  dcd40b29dfc74b00a9542d9be0f98cd040f7d214
+    commit: 0f9ef1c304488b498f5bf5e1fdb66ab6a028667e
 
   cryptodev_linux:
     url:  https://github.com/cryptodev-linux/cryptodev-linux.git
-    commit: bb8bc7cf60d
+    commit: 135cbff90af2ba97d88f1472be595ce78721972c
     
   lttng_modules:
     url:  https://git.lttng.org/lttng-modules.git
@@ -323,11 +323,11 @@ repo:
 
   sm:
     url: https://github.com/varigit/imx-sm.git
-    commit: 091468c0742b8f0cd3abf10e118cbd308c904de6
+    commit: 9922e00fc09049a12c2737513c0f36becbadd316
 
   oei:
     url: https://github.com/varigit/imx-oei.git
-    commit: 7b1da7588344313cb65b8e23a093ad7f563d9f34
+    commit: e5ed3502f14f6e3a889a04175a0ac4c1826233ef
 
   cogl:
     url:  https://gitlab.gnome.org/GNOME/cogl.git
@@ -379,6 +379,7 @@ repo:
 
   imx_alsa_plugin:
    url:   https://github.com/nxp-imx/imx-alsa-plugins.git
+   tag:  lf-6.12.20-2.0.0
 
   alsa_lib:
     url:  https://github.com/alsa-project/alsa-lib.git
@@ -416,6 +417,7 @@ repo:
 # connectivity component repositories
   nxp_wlan_bt:
     url:  https://github.com/nxp-imx/mwifiex.git
+    tag:  lf-6.12.20-2.0.0
 
   meta_variscite_bsp_common:
     url: https://github.com/varigit/meta-variscite-bsp-common.git
