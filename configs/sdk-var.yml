@@ -58,6 +58,7 @@ DEFAULT_PKGDIR: $FBDIR/components_${DISTRIB_VERSION}
 # default kernel config list
 KERNEL_CONFIG:
   ARM64_IMX: "imx8_var_defconfig"
+  ARM64_IMX8MQ: "imx8mq_var_dart_defconfig"
   ARM32_IMX: "imx_v7_defconfig"
 
 
