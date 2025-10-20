@@ -528,7 +528,8 @@ check_binfmt_qemu() {
 
 flexbuild_launch_docker() {
     dnum=$(echo $FBDIR | md5sum | cut -b 1-6)
-    containername=${username}_fbdebian_${DEBIAN_VERSION}_${dnum}
+    prefix="${DOCKER_CONTAINER_PREFIX:-}"
+    containername=${prefix}${username}_fbdebian_${DEBIAN_VERSION}_${dnum}
     if ! docker ps -a | grep -q $containername; then
 	if ! docker ps -a | grep -q ' fbdebian_${DEBIAN_VERSION}'; then
 	    make -C $FBDIR/docker/debian
