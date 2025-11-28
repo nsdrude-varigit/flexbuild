@@ -161,6 +161,7 @@ mmdebstrap:
     - 'cp src/system/platcfg.service $1/lib/systemd/system/'
     - 'cp src/system/blacklist.conf $1/etc/modprobe.d/'
     - 'cp src/system/ts.conf $1/etc/'
+    - 'cp src/system/u-boot-splash/splash.bmp $1/boot'
     - 'chroot "$1" ln -s /lib/systemd/system/platcfg.service /etc/systemd/system/multi-user.target.wants/platcfg.service'
     # Enable systemd-networkd and related services in the chroot environment
     # to ensure network configuration and availability at boot.
