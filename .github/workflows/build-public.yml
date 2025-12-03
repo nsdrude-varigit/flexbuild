@@ -70,6 +70,7 @@ jobs:
         uses: docker/setup-qemu-action@v3
         with:
           platforms: arm64
+          cache-image: false
 
       # Quick sanity-check on available storage
       - name: Report disk free space
