@@ -62,6 +62,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Capture short commit SHA
+        id: short-sha
+        run: echo "value=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
       - name: Register QEMU for arm64
         uses: docker/setup-qemu-action@v3
         with:
@@ -191,3 +195,13 @@ jobs:
             . setup.env || true
             bld -r debian:${{ matrix.rootfs }} -m ${{ matrix.machine }} -f sdk-var.yml create-recovery-sdcard-image
           '
+
+      - name: Upload packaged recovery image
+        uses: actions/upload-artifact@v4
+        with:
+          name: debian-bookworm-6.6.52_24.12-${{ matrix.machine }}-${{ matrix.rootfs }}-${{ steps.short-sha.outputs.value }}
+          path: |
+            build_lsdk2412/images/var-recovery-image-${{ matrix.machine }}.img.zst
+            build_lsdk2412/images/var-recovery-image-${{ matrix.machine }}.img.bmap
+          if-no-files-found: error
+          retention-days: 90
