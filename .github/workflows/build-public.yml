@@ -13,7 +13,7 @@ name: Build all machines - Public
 on:
   push:
     branches:
-      - LSDK-24.12_DEBIAN-12_LF-6.6.36_var01
+      - '**'
   workflow_dispatch:
 
 concurrency:
