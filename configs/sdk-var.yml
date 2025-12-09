@@ -137,7 +137,7 @@ repo:
 
   imx_firmware:
     url:  https://github.com/NXP/imx-firmware.git
-    tag:  lf-6.6.52-2.2.0
+    tag:  lf-6.12.49-2.2.0
     # firmware for wifi/bt
 
   brcm_lwb_firmware:
