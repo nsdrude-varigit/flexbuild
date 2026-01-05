@@ -62,7 +62,6 @@ define imx_mkimage_target
 	cp -f $(BSPDIR)/firmware-imx/firmware/hdmi/cadence/signed_* $(BSPDIR)/imx_mkimage/$$SOC_FAMILY; \
     elif echo $1 | grep -qE ^imx8qm; then \
 	SOC=iMX8QM; SOC_FAMILY=iMX8QM; target=$${IMX_MKIMAGE_TARGET:-flash_spl}; \
-	cp -f $(BSPDIR)/imx-scfw/mx8qm-mek-scfw-tcm.bin $(BSPDIR)/imx_mkimage/iMX8QM/scfw_tcm.bin; \
 	cp -f $(BSPDIR)/imx-seco/firmware/seco/mx8qmb0-ahab-container.img $(BSPDIR)/imx_mkimage/iMX8QM; \
     elif echo $1 | grep -qE ^imx8qx; then \
 	SOC=iMX8QX; SOC_FAMILY=iMX8QX; target=$${IMX_MKIMAGE_TARGET:-flash_spl}; \
