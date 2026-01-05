@@ -111,7 +111,7 @@ define imx_mkimage_target
 	$$opdir/spl/u-boot-spl.bin $$opdir/u-boot.bin \
 	$$opdir/arch/arm/dts/*$${plat}*.dtb \
 	$$opdir/u-boot-nodtb.bin && \
-    if [ $(CONFIG_OPTEE) = y -a -f $$bl32 ]; then \
+    if [ "$(CONFIG_OPTEE)" = y -a -f $$bl32 ]; then \
 	cp -f $$bl32 $(BSPDIR)/imx_mkimage/$$SOC_FAMILY/tee.bin; \
     fi && \
     cp -f $$opdir/tools/mkimage $(BSPDIR)/imx_mkimage/$$SOC_FAMILY/mkimage_uboot && \
