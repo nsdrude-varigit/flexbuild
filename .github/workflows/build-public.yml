@@ -33,6 +33,7 @@ jobs:
           - imx8qxp-var-som
           - imx91-var-som
           - imx8mq-var-dart
+          - imx8qm-var-som
         rootfs:
           - server
           - desktop
