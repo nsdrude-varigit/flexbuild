@@ -46,18 +46,12 @@ generate_bootpartition() {
     # install /lib/firmware
     mkdir -p $bootpartdir/firmware
     if [ $SOCFAMILY = IMX ]; then
-	[ ! -d $FBOUTDIR/bsp/imx_firmware/lib/firmware/imx/sof-gcc ] &&  bld sof_zephyr -a $DESTARCH -p $SOCFAMILY
-	[ ! -d $FBOUTDIR/bsp/imx_firmware/lib/firmware/imx/dsp ] && bld imx_dsp -a $DESTARCH -p $SOCFAMILY
 	[ ! -d $FBOUTDIR/bsp/imx_firmware/lib/firmware/imx/easrc ] && bld imx_firmware -a $DESTARCH -p $SOCFAMILY
-	[ ! -d $FBOUTDIR/bsp/imx_mcore_demos/imx93-m33-demo ] && bld mcore_demo -a $DESTARCH -p $SOCFAMILY
-	[ ! -d $DESTDIR/usr/lib/ethosu_firmware ] && [ $PKG_GROUPS_ML = "y" ] && bld ethosu_firmware -a $DESTARCH -p $SOCFAMILY
 	[ ! -d $FBOUTDIR/bsp/brcm_firmware/lib/firmware ] && bld brcm_firmware -a $DESTARCH -p $SOCFAMILY
 	[ ! -d $FBOUTDIR/bsp/wl18xx_firmware/lib/firmware ] && bld wl18xx_firmware -a $DESTARCH -p $SOCFAMILY
 
     [ -d $FBOUTDIR/bsp/imx_firmware/lib/firmware ] && \
         cp -Prf $FBOUTDIR/bsp/imx_firmware/lib/firmware/* $bootpartdir/firmware || echo "Directory not found: $FBOUTDIR/bsp/imx_firmware/lib/firmware"
-    [ -d "$FBOUTDIR/bsp/imx_mcore_demos/imx93-m33-demo" ] && \
-        cp -Prf "$FBOUTDIR/bsp/imx_mcore_demos/imx93-m33-demo/imx93-"*m33*.elf "$DESTDIR/usr/lib/ethosu_firmware" "$bootpartdir/firmware" || echo "Directory not found: $FBOUTDIR/bsp/imx_mcore_demos/imx93-m33-demo"
     [ -d $FBOUTDIR/bsp/brcm_firmware/lib/firmware ] && \
         cp -Prf $FBOUTDIR/bsp/brcm_firmware/lib/firmware/* $bootpartdir/firmware || echo "Directory not found: $FBOUTDIR/bsp/brcm_firmware/lib/firmware"
     [ -d $FBOUTDIR/bsp/iw612_firmware/lib/firmware/nxp ] && \
@@ -79,8 +73,6 @@ generate_bootpartition() {
     fi
 
     bld distroscr -a $DESTARCH -p $SOCFAMILY
-
-    ls $FBOUTDIR/bsp/u-boot/$socseries*/*boot.scr | grep -E $scrmask | xargs -I {} cp {} $bootpartdir
 
     # check UEFI
     if [ "$CONFIG_UEFI_BIN" = y -a $SOCFAMILY = LS -a $DESTARCH = arm64 ]; then
