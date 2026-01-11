@@ -27,7 +27,7 @@ imx_vpu_hantro:
 	     h1_encoder/software/linux_reference/ewl/ewl_x280_common.c && \
 	 ln -sf dma-buf.h $(DESTDIR)/usr/include/linux/dma-buf-imx.h && \
 	 sudo cp -rf $(DESTDIR)/usr/include/linux $(RFSDIR)/usr/include/ && \
-	 DEST_DIR=$(DESTDIR) CROSS_COMPILE=aarch64-linux-gnu- \
+	 DEST_DIR=$(DESTDIR) CROSS_COMPILE=$ARM_LINUX_GNU_TOOLCHAIN- \
 	 PLATFORM=IMX8MM ARCH="-march=armv8-a+crc+crypto" SDKTARGETSYSROOT=$(RFSDIR) \
 	 $(MAKE) all && \
 	 $(MAKE) install PLATFORM=IMX8MM DEST_DIR=$(DESTDIR) libdir=/usr/lib && \

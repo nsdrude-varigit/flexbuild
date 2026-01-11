@@ -22,7 +22,7 @@ ifeq ($(CONFIG_SMW),y)
 		-DCMAKE_BUILD_TYPE=release \
 		-DTA_DEV_KIT_ROOT=$(DESTDIR)/usr/include/optee/export-user_ta \
 		-DTEEC_ROOT=$(RFSDIR) \
-		-DJSONC_ROOT=$(RFSDIR)/usr/lib/aarch64-linux-gnu \
+		-DJSONC_ROOT=$(RFSDIR)/usr/lib/$ARM_LINUX_GNU_TOOLCHAIN \
 		-DTEE_TA_DESTDIR=/usr/lib && \
 	 cmake --build build_$(DISTROTYPE)_$(ARCH) --target all && \
 	 cmake --install build_$(DISTROTYPE)_$(ARCH) --prefix /usr && \

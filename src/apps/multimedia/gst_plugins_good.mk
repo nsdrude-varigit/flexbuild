@@ -29,9 +29,9 @@ gst_plugins_good:
 		-Dc_args="-I$(DESTDIR)/usr/include/gstreamer-1.0 \
 			  -I$(DESTDIR)/usr/lib/gstreamer-1.0/include -I$(DESTDIR)/usr/include" \
 		-Dc_link_args="-L$(DESTDIR)/usr/lib \
-			-L$(RFSDIR)/usr/lib/aarch64-linux-gnu -lgstnet-1.0 -lgstrtp-1.0 -lgstrtsp-1.0 \
+			-L$(RFSDIR)/usr/lib/$ARM_LINUX_GNU_TOOLCHAIN -lgstnet-1.0 -lgstrtp-1.0 -lgstrtsp-1.0 \
 			-lgstaudio-1.0 -lgstvideo-1.0 -lgstallocators-1.0 -lgstpbutils-1.0 -lEGL -lgbm" \
-		-Dcpp_link_args="-L$(DESTDIR)/usr/lib -L$(RFSDIR)/usr/lib/aarch64-linux-gnu -lgstnet-1.0 \
+		-Dcpp_link_args="-L$(DESTDIR)/usr/lib -L$(RFSDIR)/usr/lib/$ARM_LINUX_GNU_TOOLCHAIN -lgstnet-1.0 \
 			-lgstrtp-1.0 -lgstrtsp-1.0 -lgstaudio-1.0 -lgstvideo-1.0 -lgstallocators-1.0 \
 			-lgstpbutils-1.0 -lEGL -lgbm" \
 		--prefix=/usr --buildtype=release \

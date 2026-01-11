@@ -16,7 +16,7 @@ nnstreamer_edge:
 	 cd $(MLDIR)/nnstreamer_edge && \
 	 export CC="$(CROSS_COMPILE)gcc --sysroot=$(RFSDIR)" && \
 	 export CXX="$(CROSS_COMPILE)g++ --sysroot=$(RFSDIR)" && \
-         export PKG_CONFIG_LIBDIR=$(RFSDIR)/usr/lib/aarch64-linux-gnu/pkgconfig && \
+         export PKG_CONFIG_LIBDIR=$(RFSDIR)/usr/lib/$(ARM_LINUX_GNU_TOOLCHAIN)/pkgconfig && \
          export PKG_CONFIG_PATH=$(RFSDIR)/usr/share/pkgconfig && \
 	 mkdir -p build_$(DISTROTYPE)_$(ARCH) && \
 	 cmake  -S $(MLDIR)/nnstreamer_edge \

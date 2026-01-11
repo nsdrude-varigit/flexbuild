@@ -18,7 +18,7 @@ ifeq ($(CONFIG_ROS), "y")
 	 if [ -d $(RFSDIR)/opt/ros2_jazzy ]; then \
 	     $(call fbprint_n,"ROS was already installed in $(RFSDIR)/opt/ros2_jazzy") && exit; \
 	 fi && \
-	 if [ ! -d $(RFSDIR)/usr/lib/aarch64-linux-gnu ]; then \
+	 if [ ! -d $(RFSDIR)/usr/lib/$ARM_LINUX_GNU_TOOLCHAIN ]; then \
 	     bld rfs -r $(DISTROTYPE):$(DISTROVARIANT) -a $(DESTARCH); \
 	 fi && \
 	 $(call fbprint_b,"ROS2") && \

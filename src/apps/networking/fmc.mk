@@ -31,8 +31,8 @@ fmc:
 	 fi && \
 	 export CC="$(CROSS_COMPILE)gcc --sysroot=$(RFSDIR)" && \
 	 export CXX="$(CROSS_COMPILE)g++ --sysroot=$(RFSDIR)" && \
-	 export LDFLAGS="-L$(RFSDIR)/usr/lib -L$(DESTDIR)/usr/lib -L$(RFSDIR)/usr/lib/aarch64-linux-gnu" && \
-	 export CFLAGS="-Wno-write-strings -fpermissive -I$(RFSDIR)/usr/include/aarch64-linux-gnu -I$(NETDIR)/fmlib/include/fmd \
+	 export LDFLAGS="-L$(RFSDIR)/usr/lib -L$(DESTDIR)/usr/lib -L$(RFSDIR)/usr/lib/$ARM_LINUX_GNU_TOOLCHAIN" && \
+	 export CFLAGS="-Wno-write-strings -fpermissive -I$(RFSDIR)/usr/include/$ARM_LINUX_GNU_TOOLCHAIN -I$(NETDIR)/fmlib/include/fmd \
 		-I$(NETDIR)/fmlib/include/fmd/Peripherals -I$(NETDIR)/fmlib/include/fmd/integrations" && \
 	 \
 	 cd $(NETDIR)/fmc && \
@@ -51,8 +51,8 @@ fmc:
 	 install -m 644 etc/fmc/config/netpcd.xsd $(DESTDIR)/etc/fmc/config && \
 	 install -d $(DESTDIR)/usr/local/include/fmc && \
 	 install source/fmc.h $(DESTDIR)/usr/local/include/fmc && \
-	 install -d $(DESTDIR)/usr/local/lib/aarch64-linux-gnu && \
-	 install source/libfmc.a $(DESTDIR)/usr/local/lib/aarch64-linux-gnu && \
+	 install -d $(DESTDIR)/usr/local/lib/$ARM_LINUX_GNU_TOOLCHAIN && \
+	 install source/libfmc.a $(DESTDIR)/usr/local/lib/$ARM_LINUX_GNU_TOOLCHAIN && \
 	 install -d $(DESTDIR)/usr/local/fmc/ && \
 	 install -m 755 $(FBDIR)/src/system/init-ls104xa $(DESTDIR)/usr/local/fmc && \
 	 install -d $(DESTDIR)/usr/lib/systemd/system/ && \

@@ -14,7 +14,7 @@ wayland_protocols:
 	     -e 's%@DESTDIR@%$(DESTDIR)%g' $(FBDIR)/src/system/meson.cross > meson.cross && \
 	 meson setup build_$(DISTROTYPE)_$(ARCH) \
 		-Dtests=false \
-		-Dc_link_args="-L$(DESTDIR)/usr/local/lib -L$(RFSDIR)/lib/aarch64-linux-gnu" \
+		-Dc_link_args="-L$(DESTDIR)/usr/local/lib -L$(RFSDIR)/lib/$ARM_LINUX_GNU_TOOLCHAIN" \
 		--prefix=/usr \
 		--buildtype=release \
 		--cross-file meson.cross && \

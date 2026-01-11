@@ -13,7 +13,7 @@ ifeq ($(CONFIG_OPTEE),y)
 	     bld rfs -r $(DISTROTYPE):$(DISTROVARIANT) -a $(DESTARCH); \
 	 fi && \
 	 export CC="$(CROSS_COMPILE)gcc --sysroot=$(RFSDIR)" && \
-	 export LDFLAGS="-L$(RFSDIR)/usr/lib -L$(RFSDIR)/usr/lib/aarch64-linux-gnu" && \
+	 export LDFLAGS="-L$(RFSDIR)/usr/lib -L$(RFSDIR)/usr/lib/$ARM_LINUX_GNU_TOOLCHAIN" && \
 	 export PKG_CONFIG=pkg-config && \
 	 \
 	 cd $(SECDIR)/optee_client && \

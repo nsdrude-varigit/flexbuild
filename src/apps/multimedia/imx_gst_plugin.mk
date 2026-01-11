@@ -52,7 +52,7 @@ imx_gst_plugin:
 	      -Dc_args="-O2 -pipe -g -feliminate-unused-debug-types -Wno-unused-variable -Wno-format -Wno-unused-value \
 			-Wno-unused-function -Wno-error=nonnull -Wno-error=implicit-function-declaration \
 			-I$(DESTDIR)/usr/include -I$(RFSDIR)/usr/include/gstreamer-1.0" \
-	      -Dc_link_args="-L$(DESTDIR)/usr/lib -L$(RFSDIR)/usr/lib/aarch64-linux-gnu" \
+	      -Dc_link_args="-L$(DESTDIR)/usr/lib -L$(RFSDIR)/usr/lib/$ARM_LINUX_GNU_TOOLCHAIN" \
 	      --prefix=/usr --buildtype=release \
 	      --cross-file meson.cross \
 	      -Dplatform=$(SOCPLATFORM) && \

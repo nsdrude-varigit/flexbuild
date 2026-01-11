@@ -28,7 +28,7 @@ clutter_gst:
 	 $(RFSDIR)/usr/lib && \
 	 sudo cp -rf $(DESTDIR)/usr/include/cogl $(RFSDIR)/usr/include && \
 	 sudo cp $(DESTDIR)/usr/lib/libgbm_viv.so* $(RFSDIR)/usr/lib && \
-	 sudo rm -f $(RFSDIR)/usr/lib/aarch64-linux-gnu/{libgbm.so,libcogl.so,libgstallocators-1.0.so*,libclutter-gst-3.0.so.0} && \
+	 sudo rm -f $(RFSDIR)/usr/lib/$ARM_LINUX_GNU_TOOLCHAIN/{libgbm.so,libcogl.so,libgstallocators-1.0.so*,libclutter-gst-3.0.so.0} && \
 	 \
 	 cd $(GRAPHICSDIR)/clutter_gst && \
 	 if [ ! -f .patchdone ]; then \
@@ -39,9 +39,9 @@ clutter_gst:
 			-I$(DESTDIR)/usr/include/clutter-1.0 -I$(RFSDIR)/usr/include" && \
 	 export GST_PLUGIN_SCANNER_1_0=$(GRAPHICSDIR)/clutter_gst/gst-plugin-scanner-dummy && \
 	 \
-	 ./autogen.sh --prefix=/usr --host=aarch64-linux-gnu && \
+	 ./autogen.sh --prefix=/usr --host=$ARM_LINUX_GNU_TOOLCHAIN && \
 	 ./configure CC="$(CROSS_COMPILE)gcc --sysroot=$(RFSDIR)" \
-	 	--host=aarch64-linux-gnu \
+		--host=$ARM_LINUX_GNU_TOOLCHAIN \
 		--enable-introspection=no \
 		--disable-gtk-doc \
 		--disable-static \

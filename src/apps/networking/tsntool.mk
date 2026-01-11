@@ -10,13 +10,13 @@ tsntool:
 	 $(call fbprint_b,"tsntool") && \
 	 $(call repo-mngr,fetch,tsntool,apps/networking) && \
 	 $(call repo-mngr,fetch,linux,linux) && \
-	 if [ ! -f $(RFSDIR)/lib/aarch64-linux-gnu/libnl-genl-3.so -a ! -f $(RFSDIR)/usr/lib/libnl-genl-3.so ]; then \
+	 if [ ! -f $(RFSDIR)/lib/$(ARM_LINUX_GNU_TOOLCHAIN)/libnl-genl-3.so -a ! -f $(RFSDIR)/usr/lib/libnl-genl-3.so ]; then \
 	     echo missing libnl-genl-3.so in $(RFSDIR) && exit 1; \
 	 fi && \
 	 export CC="$(CROSS_COMPILE)gcc --sysroot=$(RFSDIR)" && \
-	 export CFLAGS="-I$(DESTDIR)/usr/include -I$(RFSDIR)/usr/include/libnl3 -I$(RFSDIR)/usr/include/aarch64-linux-gnu" && \
-	 export LDFLAGS="-lcjson -lnl-3 -lnl-genl-3 -L$(DESTDIR)/usr/lib/aarch64-linux-gnu \
-	                 -L$(RFSDIR)/usr/lib -L$(RFSDIR)/usr/lib/aarch64-linux-gnu" && \
+	 export CFLAGS="-I$(DESTDIR)/usr/include -I$(RFSDIR)/usr/include/libnl3 -I$(RFSDIR)/usr/include/$ARM_LINUX_GNU_TOOLCHAIN" && \
+	 export LDFLAGS="-lcjson -lnl-3 -lnl-genl-3 -L$(DESTDIR)/usr/lib/$ARM_LINUX_GNU_TOOLCHAIN \
+	                 -L$(RFSDIR)/usr/lib -L$(RFSDIR)/usr/lib/$ARM_LINUX_GNU_TOOLCHAIN" && \
 	 \
 	 cd $(NETDIR)/tsntool && \
 	 mkdir -p include/linux && \

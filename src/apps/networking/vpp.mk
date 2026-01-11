@@ -12,24 +12,24 @@ vpp:
 	@[ $(SOCFAMILY) != LS -o $(DISTROVARIANT) != server ] && exit || \
 	 $(call fbprint_b,"vpp") && \
 	 $(call repo-mngr,fetch,vpp,apps/networking) && \
-	 if [ ! -d $(RFSDIR)/usr/lib/aarch64-linux-gnu ]; then \
+	 if [ ! -d $(RFSDIR)/usr/lib/$ARM_LINUX_GNU_TOOLCHAIN ]; then \
 	     bld rfs -r $(DISTROTYPE):$(DISTROVARIANT) -a $(DESTARCH); \
 	 fi && \
 	 if [ ! -d $(DESTDIR)/usr/local/dpdk ]; then \
 	     bld dpdk -r $(DISTROTYPE):$(DISTROVARIANT); \
 	 fi && \
-	 export CROSS_PREFIX=aarch64-linux-gnu && \
+	 export CROSS_PREFIX=$ARM_LINUX_GNU_TOOLCHAIN && \
 	 export CROSS_TOOLCHAIN=/usr && \
 	 export CROSS_SYSROOT=$(RFSDIR) && \
 	 export ARCH=arm64 && export OPENSSL_PATH=$(RFSDIR)/usr && \
 	 export EXTRA_INC="$(NETDIR)/dpdk/lib/eal/include -I$(NETDIR)/dpdk/drivers/bus/vmbus \
-	 	-I$(NETDIR)/dpdk/lib/cryptodev -I$(RFSDIR)/usr/include/aarch64-linux-gnu" && \
-	 export EXTRA_LIBS=$(RFSDIR)/lib/aarch64-linux-gnu && \
+		-I$(NETDIR)/dpdk/lib/cryptodev -I$(RFSDIR)/usr/include/$ARM_LINUX_GNU_TOOLCHAIN" && \
+	 export EXTRA_LIBS=$(RFSDIR)/lib/$ARM_LINUX_GNU_TOOLCHAIN && \
 	 export DPDK_PATH=$(DESTDIR)/usr && \
-	 export LD_LIBRARY_PATH=$(DESTDIR)/usr/local/lib:$(RFSDIR)/lib/aarch64-linux-gnu:$(RFSDIR)/lib && \
-	 [ ! -f /usr/lib/python3.11/_sysconfigdata__aarch64-linux-gnu.py ] && \
-	 sudo ln -s $(RFSDIR)/usr/lib/python3.11/_sysconfigdata__aarch64-linux-gnu.py \
-	 /usr/lib/python3.11/_sysconfigdata__aarch64-linux-gnu.py || true && \
+	 export LD_LIBRARY_PATH=$(DESTDIR)/usr/local/lib:$(RFSDIR)/lib/$ARM_LINUX_GNU_TOOLCHAIN:$(RFSDIR)/lib && \
+	 [ ! -f /usr/lib/python3.11/_sysconfigdata__$ARM_LINUX_GNU_TOOLCHAIN.py ] && \
+	 sudo ln -s $(RFSDIR)/usr/lib/python3.11/_sysconfigdata__$ARM_LINUX_GNU_TOOLCHAIN.py \
+	 /usr/lib/python3.11/_sysconfigdata__$ARM_LINUX_GNU_TOOLCHAIN.py || true && \
 	 \
 	 cd $(NETDIR)/vpp && \
 	 sed -i -e 's/22.04)/12)/g' -e 's/clang-format-11/clang-format/g' \

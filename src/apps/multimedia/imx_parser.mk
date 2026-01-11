@@ -16,7 +16,7 @@ imx_parser:
 	     mv imx-parser* imx_parser && rm -f imx_parser.bin; \
 	 fi && \
 	 cd imx_parser && \
-	 ./configure CC=aarch64-linux-gnu-gcc \
+	 ./configure CC=$ARM_LINUX_GNU_TOOLCHAIN-gcc \
 	   --enable-armv8 \
 	   --disable-static \
 	   --prefix=/usr && \

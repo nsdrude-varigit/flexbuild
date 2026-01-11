@@ -15,7 +15,7 @@ fmlib:
 	 cd $(NETDIR)/fmlib && \
 	 export PREFIX=/usr && \
 	 export KERNEL_SRC=$(KERNEL_PATH) && \
-	 export CFLAGS="-O2 -pipe -I$(RFSDIR)/usr/include -I$(RFSDIR)/usr/include/aarch64-linux-gnu" && \
+	 export CFLAGS="-O2 -pipe -I$(RFSDIR)/usr/include -I$(RFSDIR)/usr/include/$ARM_LINUX_GNU_TOOLCHAIN" && \
 	 $(MAKE) clean && \
 	 $(MAKE) && \
 	 $(MAKE) install-libfm-arm && \

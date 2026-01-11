@@ -14,10 +14,10 @@ alsa_lib:
 	 $(call repo-mngr,fetch,alsa_lib,apps/multimedia) && \
 	 cd $(MMDIR)/alsa_lib && \
 	 sed -i 's|=Versions|=$(srcdir)/Versions|g' src/topology/Makefile.am && \
-	 export LD_LIBRARY_PATH=$(DESTDIR)/usr/lib:$(RFSDIR)/usr/lib:$(RFSDIR)/usr/lib/aarch64-linux-gnu && \
+	 export LD_LIBRARY_PATH=$(DESTDIR)/usr/lib:$(RFSDIR)/usr/lib:$(RFSDIR)/usr/lib/$ARM_LINUX_GNU_TOOLCHAIN && \
 	 export PKG_CONFIG_PATH=$(DESTDIR)/usr/lib/pkgconfig:$(RFSDIR)/usr/lib/pkgconfig && \
 	 libtoolize --force --copy --automake && aclocal && \
 	 autoheader && automake --foreign --copy --add-missing && autoconf && \
-	 ./configure --host=aarch64 CC=aarch64-linux-gnu-gcc 1>/dev/null && \
+	 ./configure --host=aarch64 CC=$ARM_LINUX_GNU_TOOLCHAIN-gcc 1>/dev/null && \
 	 $(MAKE) -j$(JOBS) install && \
 	 $(call fbprint_d,"alsa_lib")

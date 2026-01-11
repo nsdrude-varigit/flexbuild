@@ -15,7 +15,7 @@ imx_alsa_plugin:
 	     bld imx_sw_pdm -r $(DISTROTYPE):$(DISTROVARIANT); \
 	 fi && \
 	 sudo cp -rf $(DESTDIR)/usr/include/imx-mm $(RFSDIR)/usr/include && \
-	 sudo ln -sf libasound.so.2 $(RFSDIR)/usr/lib/aarch64-linux-gnu/libasound.so && \
+	 sudo ln -sf libasound.so.2 $(RFSDIR)/usr/lib/$(ARM_LINUX_GNU_TOOLCHAIN)/libasound.so && \
 	 \
 	 cd $(MMDIR)/imx_alsa_plugin && \
 	 sed -i 's/imx\///' asrc/asrc_pair.h asrc/asrc_pair.c && \

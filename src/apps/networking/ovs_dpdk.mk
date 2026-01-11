@@ -7,7 +7,7 @@ ovs_dpdk:
 	@[ $(SOCFAMILY) != LS -o $(DISTROVARIANT) != server ] && exit || \
 	 $(call fbprint_b,"ovs_dpdk") && \
 	 $(call repo-mngr,fetch,ovs_dpdk,apps/networking) && \
-	 if [ ! -d $(RFSDIR)/usr/lib/aarch64-linux-gnu ]; then \
+	 if [ ! -d $(RFSDIR)/usr/lib/$ARM_LINUX_GNU_TOOLCHAIN ]; then \
 	     bld rfs -r $(DISTROTYPE):$(DISTROVARIANT); \
 	 fi && \
 	 if [ ! -d $(DESTDIR)/usr/local/dpdk ]; then \
@@ -20,11 +20,11 @@ ovs_dpdk:
 	 \
 	 cd $(NETDIR)/ovs_dpdk && \
 	 export CC="$(CROSS_COMPILE)gcc --sysroot=$(RFSDIR)" && \
-	 export LDFLAGS="-L$(DESTDIR)/usr/lib -L$(RFSDIR)/usr/lib -L$(RFSDIR)/lib/aarch64-linux-gnu" && \
+	 export LDFLAGS="-L$(DESTDIR)/usr/lib -L$(RFSDIR)/usr/lib -L$(RFSDIR)/lib/$ARM_LINUX_GNU_TOOLCHAIN" && \
 	 export LIBS="$(shell PKG_CONFIG_PATH=$(DESTDIR)/usr/lib/pkgconfig $(CROSS)pkg-config --libs libdpdk)" && \
 	 ./boot.sh && \
 	 ./configure --prefix=/usr \
-	   --host=aarch64-linux-gnu \
+	   --host=$ARM_LINUX_GNU_TOOLCHAIN \
 	   --with-dpdk=static \
 	   --disable-ssl \
 	   --disable-libcapng && \

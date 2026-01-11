@@ -17,11 +17,11 @@ ethosu_vela:
 	 $(call repo-mngr,fetch,ethosu_vela,apps/ml) && \
 	 cd $(MLDIR)/ethosu_vela && \
 	 export CC="$(CROSS_COMPILE)gcc --sysroot=$(RFSDIR) -I$(RFSDIR)/usr/include/python3.11" && \
-	 export LDFLAGS="-L$(DESTDIR)/usr/lib -L$(RFSDIR)/usr/lib/aarch64-linux-gnu" && \
+	 export LDFLAGS="-L$(DESTDIR)/usr/lib -L$(RFSDIR)/usr/lib/$ARM_LINUX_GNU_TOOLCHAIN" && \
 	 mkdir -p $(MLDIR)/ethosu_vela/build/dist && \
 	 NO_FETCH_BUILD=1 ARCH=arm64 \
 	 STAGING_INCDIR=$(RFSDIR)/usr/include \
-	 STAGING_LIBDIR=$(RFSDIR)/usr/lib/aarch64-linux-gnu \
+	 STAGING_LIBDIR=$(RFSDIR)/usr/lib/$ARM_LINUX_GNU_TOOLCHAIN \
 	 python3 setup.py bdist_wheel --verbose --dist-dir build/dist && \
 	 pip3 install --ignore-installed --disable-pip-version-check -t $(DESTDIR)/$(PYTHON_SITEPACKAGES_DIR) \
 	      --no-cache-dir --no-deps build/dist/ethos_u_vela*.whl && \

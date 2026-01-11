@@ -11,7 +11,7 @@ ifeq ($(strip $(subst ",,$(CONFIG_WAYLAND))),y)
 	 $(call repo-mngr,fetch,wayland,apps/graphics) && \
 	 export CC="$(CROSS_COMPILE)gcc --sysroot=$(RFSDIR)" && \
 	 export PKG_CONFIG_SYSROOT_DIR=$(RFSDIR) && \
-	 export PKG_CONFIG_LIBDIR=$(DESTDIR)/usr/lib/pkgconfig:$(RFSDIR)/usr/lib/aarch64-linux-gnu/pkgconfig && \
+	 export PKG_CONFIG_LIBDIR=$(DESTDIR)/usr/lib/pkgconfig:$(RFSDIR)/usr/lib/$(ARM_LINUX_GNU_TOOLCHAIN)/pkgconfig && \
 	 cd $(GRAPHICSDIR)/wayland && \
 	 if [ ! -f .patchdone ]; then \
 	    git am $(FBDIR)/patch/wayland/*.patch && touch .patchdone; \
@@ -23,7 +23,7 @@ ifeq ($(strip $(subst ",,$(CONFIG_WAYLAND))),y)
 		-Ddocumentation=false \
 		-Dtests=false \
 		-Dc_args="-I$(DESTDIR)/usr/include -I$(RFSDIR)/usr/include" \
-		-Dc_link_args="-L$(DESTDIR)/usr/local/lib -L$(RFSDIR)/lib/aarch64-linux-gnu" \
+		-Dc_link_args="-L$(DESTDIR)/usr/local/lib -L$(RFSDIR)/lib/$ARM_LINUX_GNU_TOOLCHAIN" \
 		--prefix=/usr \
 		--buildtype=release \
 		--cross-file=meson.cross && \

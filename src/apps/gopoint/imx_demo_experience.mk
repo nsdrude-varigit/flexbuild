@@ -23,9 +23,9 @@ imx_demo_experience:
 	 fi && \
 	 cd $(GPDIR)/imx_demo_experience && \
 	 qmake -makefile -o Makefile demoexperience.pro -spec linux-aarch64-gnu-g++ && \
-	 sed -e "s|aarch64-linux-gnu-g++|aarch64-linux-gnu-g++ --sysroot=$(RFSDIR)|g" \
-	     -e "s|/usr/lib/x86_64-linux-gnu|$(RFSDIR)/usr/lib/aarch64-linux-gnu|g" \
-	     -e "s|/usr/include/x86_64-linux-gnu|$(RFSDIR)/usr/include/aarch64-linux-gnu|g" \
+	 sed -e "s|$ARM_LINUX_GNU_TOOLCHAIN-g++|$ARM_LINUX_GNU_TOOLCHAIN-g++ --sysroot=$(RFSDIR)|g" \
+	     -e "s|/usr/lib/x86_64-linux-gnu|$(RFSDIR)/usr/lib/$ARM_LINUX_GNU_TOOLCHAIN|g" \
+	     -e "s|/usr/include/x86_64-linux-gnu|$(RFSDIR)/usr/include/$ARM_LINUX_GNU_TOOLCHAIN|g" \
 	     -e '/-spec linux-aarch64-gnu-g++/d' -i Makefile && \
 	 $(MAKE) -j$(JOBS) && \
 	 $(MAKE) -j$(JOBS) install && \

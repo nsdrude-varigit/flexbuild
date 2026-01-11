@@ -18,7 +18,7 @@ ifeq ($(strip $(subst ",,$(CONFIG_WESTON))),y)
 	@[ $(DISTROVARIANT) != desktop ] && exit || \
 	 $(call fbprint_b,"weston") && \
 	 $(call repo-mngr,fetch,weston,apps/graphics) && \
-	 if [ ! -d $(RFSDIR)/usr/lib/aarch64-linux-gnu ]; then \
+	 if [ ! -d $(RFSDIR)/usr/lib/$ARM_LINUX_GNU_TOOLCHAIN ]; then \
 	     bld rfs -r $(DISTROTYPE):$(DISTROVARIANT); \
 	 fi && \
 	 if [ ! -d $(DESTDIR)/usr/include/libdrm ]; then \
@@ -33,7 +33,7 @@ ifeq ($(strip $(subst ",,$(CONFIG_WESTON))),y)
 	 if [ ! -d $(DESTDIR)/usr/include/EGL ]; then \
 	     bld gpu_viv -r $(DISTROTYPE):$(DISTROVARIANT); \
 	 fi && \
-	 export PKG_CONFIG_LIBDIR=$(RFSDIR)/usr/lib/aarch64-linux-gnu/pkgconfig && \
+	 export PKG_CONFIG_LIBDIR=$(RFSDIR)/usr/lib/$(ARM_LINUX_GNU_TOOLCHAIN)/pkgconfig && \
 	 cd $(GRAPHICSDIR)/weston && \
 	 if [ ! -f .patchdone ]; then \
 		git am $(FBDIR)/patch/weston/*.patch && touch .patchdone; \
@@ -75,7 +75,7 @@ ifeq ($(strip $(subst ",,$(CONFIG_WESTON))),y)
 		-Dimage-webp=false \
 		-Dbackend-x11=false \
 		-Dc_args="-I$(DESTDIR)/usr/include -I$(DESTDIR)/usr/local/include -I$(RFSDIR)/usr/include" \
-		-Dc_link_args="-L$(DESTDIR)/usr/lib -L$(RFSDIR)/lib/aarch64-linux-gnu -lgbm" && \
+		-Dc_link_args="-L$(DESTDIR)/usr/lib -L$(RFSDIR)/lib/$(ARM_LINUX_GNU_TOOLCHAIN)" && \
 	 ninja install -j$(JOBS) -C build_$(DISTROTYPE)_$(ARCH) && \
 	 mkdir -p $(DESTDIR)/etc/systemd/system/sockets.target.wants && \
 	 mkdir -p $(DESTDIR)/etc/xdg/weston $(DESTDIR)/etc/systemd/system/graphical.target.wants $(DESTDIR)/etc/default && \

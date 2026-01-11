@@ -20,7 +20,7 @@ gpu_viv:
 	 ln -sf libvulkan_VSI.so $(DESTDIR)/usr/lib/libvulkan.so.1 && \
          ln -sf libvulkan.so.1 $(DESTDIR)/usr/lib/libvulkan.so && \
 	 rm -f $(DESTDIR)/usr/lib/libGL.so* && \
-	 sudo rm -f $(RFSDIR)/usr/lib/aarch64-linux-gnu/{libGLESv2.so,libGLESv2.so.2,libgbm.so.1,libvulkan.so,libvulkan.so.1,libEGL.so,libEGL.so.1} && \
+	 sudo rm -f $(RFSDIR)/usr/lib/$(ARM_LINUX_GNU_TOOLCHAIN)/{libGLESv2.so,libGLESv2.so.2,libgbm.so.1,libvulkan.so,libvulkan.so.1,libEGL.so,libEGL.so.1} && \
 	 if [ -d gpu-tools ]; then cp -rfa gpu-tools/gmem-info/usr $(DESTDIR); fi && \
 	 if [ -d gpu-demos ]; then cp -rf gpu-demos/opt $(DESTDIR); fi && \
 	 $(call fbprint_d,"gpu_viv")

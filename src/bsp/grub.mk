@@ -13,7 +13,7 @@ ifeq ($(CONFIG_GRUB),y)
 	 git clone $(grub_url) $(BSPDIR)/grub -b $(grub_tag) && \
 	 cd $(BSPDIR)/grub && \
 	 ./bootstrap && ./autogen.sh && \
-	 ./configure --target=aarch64-linux-gnu && \
+	 ./configure --target=$ARM_LINUX_GNU_TOOLCHAIN && \
 	 $(MAKE) && \
 	 echo 'configfile ${cmdpath}/grub.cfg' > grub.cfg && \
 	 grub-mkstandalone --directory=./grub-core -O arm64-efi -o BOOTAA64.EFI \

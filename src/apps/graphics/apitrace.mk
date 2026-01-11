@@ -22,7 +22,7 @@ ifeq ($(CONFIG_APITRACE),y)
 	 export CC="$(CROSS_COMPILE)gcc -march=armv8-a+crc+crypto -mbranch-protection=standard --sysroot=$(RFSDIR)" && \
 	 export CXX="$(CROSS_COMPILE)g++ -march=armv8-a+crc+crypto -mbranch-protection=standard --sysroot=$(RFSDIR)" && \
 	 export PKG_CONFIG_SYSROOT_DIR=$(RFSDIR) && \
-	 export PKG_CONFIG_PATH=$(RFSDIR)/usr/lib/aarch64-linux-gnu/pkgconfig:$(RFSDIR)/usr/share/pkgconfig:$(DESTDIR)/usr/lib/pkgconfig && \
+	 export PKG_CONFIG_PATH=$(RFSDIR)/usr/lib/$(ARM_LINUX_GNU_TOOLCHAIN)/pkgconfig:$(RFSDIR)/usr/share/pkgconfig:$(DESTDIR)/usr/lib/pkgconfig && \
 	 mkdir -p build_$(DISTROTYPE)_$(ARCH) && \
 	 cmake  -S $(GRAPHICSDIR)/apitrace \
 		-B $(GRAPHICSDIR)/apitrace/build_$(DISTROTYPE)_$(ARCH) \

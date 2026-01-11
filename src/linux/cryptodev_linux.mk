@@ -13,7 +13,7 @@ cryptodev_linux:
 	 if [ ! -f $$opdir/include/config/auto.conf ]; then \
 	     bld linux -a $(DESTARCH) -p $(SOCFAMILY); \
 	 fi && \
-	 if [ ! -d $(RFSDIR)/usr/lib/aarch64-linux-gnu ]; then \
+	 if [ ! -d $(RFSDIR)/usr/lib/$ARM_LINUX_GNU_TOOLCHAIN ]; then \
 	     bld rfs -a $(DESTARCH) -r $(DISTROTYPE):$(DISTROVARIANT); \
 	 fi && \
 	 \
@@ -21,7 +21,7 @@ cryptodev_linux:
 	 if [ -d $(FBDIR)/patch/cryptodev_linux ] && [ ! -f .patchdone ]; then \
 	    git am $(FBDIR)/patch/cryptodev_linux/*.patch && touch .patchdone; \
 	 fi && \
-	 export KERNEL_MAKE_OPTS="-lcrypto -L$(RFSDIR)/usr/lib/aarch64-linux-gnu" && \
+	 export KERNEL_MAKE_OPTS="-lcrypto -L$(RFSDIR)/usr/lib/$ARM_LINUX_GNU_TOOLCHAIN" && \
 	 $(MAKE) KERNEL_DIR=$(KERNEL_PATH) O=$$opdir && \
 	 $(MAKE) install KERNEL_DIR=$(KERNEL_PATH) O=$$opdir INSTALL_MOD_PATH=$$opdir/tmp && \
 	 $(call fbprint_d,"cryptodev_linux")

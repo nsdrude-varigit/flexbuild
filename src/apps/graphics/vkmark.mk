@@ -22,7 +22,7 @@ ifeq ($(CONFIG_VKMARK),y)
 	 [ `hostname` = fbdebian ] && export PKG_CONFIG_SYSROOT_DIR="" || true && \
 	 sed -e 's%@TARGET_CROSS@%$(CROSS_COMPILE)%g' -e 's%@STAGING_DIR@%$(RFSDIR)%g' \
 	     -e 's%@DESTDIR@%$(DESTDIR)%g' $(FBDIR)/src/system/meson.cross > meson.cross && \
-	 sudo rm -f $(RFSDIR)/usr/lib/aarch64-linux-gnu/libvulkan.so && \
+	 sudo rm -f $(RFSDIR)/usr/lib/$(ARM_LINUX_GNU_TOOLCHAIN)/libvulkan.so && \
 	 sudo cp -fa $(DESTDIR)/usr/lib/{libvulkan*.so*,libSPIRV_viv.so,libGLSLC.so} $(RFSDIR)/usr/lib && \
 	 sudo cp -fr $(DESTDIR)/usr/include/vulkan $(RFSDIR)/usr/include/ && \
 	 meson setup build_$(DISTROTYPE)_$(ARCH) \

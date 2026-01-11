@@ -16,7 +16,7 @@ imx_sw_pdm:
 	     mv imx-sw-pdm* imx_sw_pdm && rm -f imx_sw_pdm.bin; \
 	 fi && \
 	 cd imx_sw_pdm && \
-	 ./configure CC=aarch64-linux-gnu-gcc \
+	 ./configure CC=$ARM_LINUX_GNU_TOOLCHAIN-gcc \
 	   --enable-armv8 \
 	   --prefix=/usr && \
 	 $(MAKE) -j$(JOBS) && \

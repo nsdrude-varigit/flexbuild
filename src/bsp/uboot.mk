@@ -37,7 +37,7 @@ define build-uboot-target
 	if echo $1 | grep -qE 'ls1021a|^mx'; then \
 	    export ARCH=arm && export CROSS_COMPILE=arm-linux-gnueabihf-; \
 	else \
-	    export ARCH=arm64 && export CROSS_COMPILE=aarch64-linux-gnu-; \
+	    export ARCH=$(ARCH) && export CROSS_COMPILE=$(ARM_LINUX_GNU_TOOLCHAIN)-; \
 	fi && \
 	if [ $(MACHINE) != all ]; then brd=$(MACHINE); fi && \
 	opdir=$(FBOUTDIR)/bsp/u-boot/$$brd/output/$1 && mkdir -p $$opdir && \

@@ -28,7 +28,7 @@ pktgen_dpdk:
 	 meson setup $$build_dir \
 		-Dc_args="-DRTE_FORCE_INTRINSICS -I$(DESTDIR)/usr/include -Wno-error=mismatched-dealloc \
 			  -Wno-error=nonnull -Wno-error=implicit-function-declaration -Wno-error=unused-variable" \
-		-Dc_link_args="-L$(DESTDIR)/usr/lib -L$(RFSDIR)/lib/aarch64-linux-gnu" \
+		-Dc_link_args="-L$(DESTDIR)/usr/lib -L$(RFSDIR)/lib/$ARM_LINUX_GNU_TOOLCHAIN" \
 		--prefix=$(DESTDIR)/usr --buildtype=release \
 		--cross-file meson.cross && \
 	 DESTDIR=$(DESTDIR) ninja -j $(JOBS) -C $$build_dir && \

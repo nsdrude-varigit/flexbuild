@@ -16,8 +16,8 @@ spc:
 	 fi && \
 	 export CC="$(CROSS_COMPILE)gcc --sysroot=$(RFSDIR)" && \
 	 export CXX="$(CROSS_COMPILE)g++ --sysroot=$(RFSDIR)" && \
-	 export CFLAGS="-fpermissive -I$(RFSDIR)/usr/include/aarch64-linux-gnu" && \
-	 export LDFLAGS="-L$(RFSDIR)/usr/lib -L$(RFSDIR)/usr/lib/aarch64-linux-gnu" && \
+	 export CFLAGS="-fpermissive -I$(RFSDIR)/usr/include/$ARM_LINUX_GNU_TOOLCHAIN" && \
+	 export LDFLAGS="-L$(RFSDIR)/usr/lib -L$(RFSDIR)/usr/lib/$ARM_LINUX_GNU_TOOLCHAIN" && \
 	 \
 	 $(MAKE) -C $(NETDIR)/spc/source \
 		 LIBXML2_HEADER_PATH=$$xmlhdr \

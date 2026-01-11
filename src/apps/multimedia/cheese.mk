@@ -27,14 +27,14 @@ cheese:
 	 if [ ! -f $(DESTDIR)/usr/lib/libclutter-gst-3.0.so ]; then \
 	     bld clutter_gst -r $(DISTROTYPE):$(DISTROVARIANT) -a $(DESTARCH); \
 	 fi && \
-	 sudo rm -f $(RFSDIR)/usr/lib/aarch64-linux-gnu/libgstallocators-1.0.so.0 && \
+	 sudo rm -f $(RFSDIR)/usr/lib/$(ARM_LINUX_GNU_TOOLCHAIN)/libgstallocators-1.0.so.0 && \
 	 sudo cp -rf $(DESTDIR)/usr/include/cogl $(RFSDIR)/usr/include && \
 	 \
 	 meson setup build_$(DISTROTYPE)_$(ARCH) \
 		-Dc_args="-I$(DESTDIR)/usr/include/gstreamer-1.0 -I$(DESTDIR)/usr/include \
 			  -I$(DESTDIR)/usr/include/clutter-gst-3.0" \
-		-Dc_link_args="-L$(DESTDIR)/usr/lib -L$(RFSDIR)/usr/lib/aarch64-linux-gnu -lgstbase-1.0 -lclutter-gst-3.0" \
-		-Dcpp_link_args="-L$(DESTDIR)/usr/lib -L$(RFSDIR)/usr/lib/aarch64-linux-gnu -lgstbase-1.0 -lclutter-gst-3.0" \
+		-Dc_link_args="-L$(DESTDIR)/usr/lib -L$(RFSDIR)/usr/lib/$ARM_LINUX_GNU_TOOLCHAIN -lgstbase-1.0 -lclutter-gst-3.0" \
+		-Dcpp_link_args="-L$(DESTDIR)/usr/lib -L$(RFSDIR)/usr/lib/$ARM_LINUX_GNU_TOOLCHAIN -lgstbase-1.0 -lclutter-gst-3.0" \
 		--prefix=/usr --buildtype=release \
 		--cross-file meson.cross \
 		--strip \

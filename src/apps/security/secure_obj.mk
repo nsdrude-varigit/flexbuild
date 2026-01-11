@@ -38,12 +38,12 @@ ifeq ($(CONFIG_OPTEE),y)
 	 export SECURE_STORAGE_PATH=$(SECDIR)/secure_obj/secure_storage_ta/ta && \
 	 export OPENSSL_PATH=$(SECDIR)/openssl && \
 	 mkdir -p $(DESTDIR)/usr/local/secure_obj/$$curbrch && \
-	 mkdir -p $(DESTDIR)/usr/lib/aarch64-linux-gnu/openssl-1.0.0/engines && \
+	 mkdir -p $(DESTDIR)/usr/lib/$(ARM_LINUX_GNU_TOOLCHAIN)/openssl-1.0.0/engines && \
 	 mkdir -p $(DESTDIR)/usr/lib/optee_armtz && \
 	 sed -i 's/^CC/#CC/' secure_obj-openssl-engine/Makefile && \
 	 sed -e 's/^CC/#CC/' -e 's/^AR/#AR/' -e 's/^LD/#LD/' -i securekey_lib/flags.mk && \
 	 ./compile.sh && \
-	 cp images/libeng_secure_obj.so $(DESTDIR)/usr/lib/aarch64-linux-gnu/openssl-1.0.0/engines && \
+	 cp images/libeng_secure_obj.so $(DESTDIR)/usr/lib/$(ARM_LINUX_GNU_TOOLCHAIN)/openssl-1.0.0/engines && \
 	 mkdir -p $(KERNEL_OUTPUT_PATH)/$$curbrch/tmp/lib/modules/$$kernelrelease/extra && \
 	 cp images/*.ta $(DESTDIR)/usr/lib/optee_armtz && \
 	 cp images/*.so $(DESTDIR)/usr/local/lib && \

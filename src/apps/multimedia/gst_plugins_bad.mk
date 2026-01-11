@@ -28,10 +28,10 @@ gst_plugins_bad:
 	 if [ ! -f $(DESTDIR)/usr/lib/gstreamer-1.0/libgstopengl.so ]; then \
 	     bld gst_plugins_base -r $(DISTROTYPE):$(DISTROVARIANT) -a $(DESTARCH); \
 	 fi && \
-	 if [ -f $(RFSDIR)/usr/lib/aarch64-linux-gnu/libgstvideo-1.0.so ]; then \
-	     sudo rm -f $(RFSDIR)/lib/aarch64-linux-gnu/{libgstbase-1.0.so,libgstbase-1.0.so.0,libgbm.so,libgbm.so.1} && \
-	     sudo rm -f $(RFSDIR)/lib/aarch64-linux-gnu/{libgstallocators-1.0.so} && \
-	     sudo rm -f $(RFSDIR)/lib/aarch64-linux-gnu/{libgstvideo-1.0.so,libgstvideo-1.0.so.0,libgstaudio-1.0.so.0}; \
+	 if [ -f $(RFSDIR)/usr/lib/$(ARM_LINUX_GNU_TOOLCHAIN)/libgstvideo-1.0.so ]; then \
+	     sudo rm -f $(RFSDIR)/lib/$(ARM_LINUX_GNU_TOOLCHAIN)/{libgstbase-1.0.so,libgstbase-1.0.so.0,libgbm.so,libgbm.so.1} && \
+	     sudo rm -f $(RFSDIR)/lib/$(ARM_LINUX_GNU_TOOLCHAIN)/{libgstallocators-1.0.so} && \
+	     sudo rm -f $(RFSDIR)/lib/$(ARM_LINUX_GNU_TOOLCHAIN)/{libgstvideo-1.0.so,libgstvideo-1.0.so.0,libgstaudio-1.0.so.0}; \
 	 fi && \
 	 sudo cp -rf $(DESTDIR)/usr/lib/gstreamer-1.0 $(RFSDIR)/usr/lib && \
 	 sudo cp -rf $(DESTDIR)/usr/lib/gstreamer-1.0/include $(RFSDIR)/usr/lib/gstreamer-1.0/ && \
@@ -43,9 +43,9 @@ gst_plugins_bad:
 		-Dc_args="-O2 -pipe -g -feliminate-unused-debug-types \
 			  -I$(DESTDIR)/usr/include -I$(DESTDIR)/usr/lib/gstreamer-1.0/include \
 			  -I$(DESTDIR)/usr/include/gstreamer-1.0 -I$(RFSDIR)/usr/include" \
-		-Dc_link_args="-L$(DESTDIR)/usr/lib -L$(RFSDIR)/usr/lib/aarch64-linux-gnu \
+		-Dc_link_args="-L$(DESTDIR)/usr/lib -L$(RFSDIR)/usr/lib/$ARM_LINUX_GNU_TOOLCHAIN \
 			       -ludev -lbsd -lpthread -lgstbase-1.0 -lgstreamer-1.0 -lgstallocators-1.0" \
-		-Dcpp_link_args="-L$(DESTDIR)/usr/lib -L$(RFSDIR)/usr/lib/aarch64-linux-gnu \
+		-Dcpp_link_args="-L$(DESTDIR)/usr/lib -L$(RFSDIR)/usr/lib/$ARM_LINUX_GNU_TOOLCHAIN \
 				 -ludev -lbsd -lpthread -lgstbase-1.0 -lgstreamer-1.0 -lgstallocators-1.0" \
 		--prefix=/usr --buildtype=release \
 		--cross-file meson.cross \

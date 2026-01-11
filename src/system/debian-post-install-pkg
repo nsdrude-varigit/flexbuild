@@ -79,7 +79,7 @@ for pkg in $pkglist_server $pkglist_server_dev $pkglist_desktop $pkglist_desktop
 done
 
 if ! grep -iq mx93 /proc/device-tree/model && [ "$1" = desktop ]; then
-    sudo rm -f /usr/lib/aarch64-linux-gnu/{libGLESv2.so,libEGL.so,libgbm.so,libcogl.so,libgstallocators-1.0.so,libvulkan.so}
+    sudo rm -f /usr/lib/$(ARM_LINUX_GNU_TOOLCHAIN)/{libGLESv2.so,libEGL.so,libgbm.so,libcogl.so,libgstallocators-1.0.so,libvulkan.so}
 fi
 
 echo Installation of extra debian packages done.

@@ -64,16 +64,16 @@ build_distro_rfs_debian() {
     fi
 
     # fix absolute path for libz.so symlink when cross compiling apitrace
-    $sudopt ln -sf libz.so.1 $RFSDIR/usr/lib/aarch64-linux-gnu/libz.so
+    $sudopt ln -sf libz.so.1 $RFSDIR/usr/lib/$ARM_LINUX_GNU_TOOLCHAIN/libz.so
 
     # fixup for libtinfo.so needed by tsntool
-    $sudopt ln -sf libtinfo.so.6 $RFSDIR/usr/lib/aarch64-linux-gnu/libtinfo.so
+    $sudopt ln -sf libtinfo.so.6 $RFSDIR/usr/lib/$ARM_LINUX_GNU_TOOLCHAIN/libtinfo.so
 
     # fixup for Qt6 app cross-compiling
-    $sudopt ln -sf libQt6Quick.so.6 $RFSDIR/usr/lib/aarch64-linux-gnu/libQt6Quick.so
-    $sudopt ln -sf libQt6OpenGL.so.6 $RFSDIR/usr/lib/aarch64-linux-gnu/libQt6OpenGL.so
-    $sudopt ln -sf libQt6QmlModels.so.6 $RFSDIR/usr/lib/aarch64-linux-gnu/libQt6QmlModels.so
-    $sudopt ln -sf libQt6Qml.so.6 $RFSDIR/usr/lib/aarch64-linux-gnu/libQt6Qml.so
+    $sudopt ln -sf libQt6Quick.so.6 $RFSDIR/usr/lib/$ARM_LINUX_GNU_TOOLCHAIN/libQt6Quick.so
+    $sudopt ln -sf libQt6OpenGL.so.6 $RFSDIR/usr/lib/$ARM_LINUX_GNU_TOOLCHAIN/libQt6OpenGL.so
+    $sudopt ln -sf libQt6QmlModels.so.6 $RFSDIR/usr/lib/$ARM_LINUX_GNU_TOOLCHAIN/libQt6QmlModels.so
+    $sudopt ln -sf libQt6Qml.so.6 $RFSDIR/usr/lib/$ARM_LINUX_GNU_TOOLCHAIN/libQt6Qml.so
 
     echo -e 'export PYTHONPATH=$PYTHONPATH:/usr/lib/python3.11/site-packages:/usr/lib/python3/dist-packages' | $sudopt tee -a $RFSDIR/etc/profile 1>/dev/null
 

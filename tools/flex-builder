@@ -77,6 +77,7 @@ check_toolchain() {
 	fi
 	export ARCH=arm
 	export CROSS_COMPILE=arm-linux-gnueabihf-
+	export ARM_LINUX_GNU_TOOLCHAIN="arm-linux-gnueabihf"
     elif [ $DESTARCH = arm64 ] && [ $HOSTARCH = x86_64 -o $HOSTARCH = armv7l -o $HOSTARCH = i686 ]; then
 	[ -f /usr/bin/aarch64-linux-gnu-gcc ] && gccversion=$(aarch64-linux-gnu-gcc --version | head -1 | cut -d' ' -f4) || gccversion=0
 	if [ $gccversion = 0 ]; then
@@ -89,6 +90,7 @@ check_toolchain() {
 	fi
 	export ARCH=arm64
 	export CROSS_COMPILE=aarch64-linux-gnu-
+	export ARM_LINUX_GNU_TOOLCHAIN="aarch64-linux-gnu"
     elif [ $HOSTARCH = aarch64 -o $HOSTARCH = armv7l ]; then
 	if [ $DESTARCH = arm32 ]; then
 	    export ARCH=arm
@@ -1162,8 +1164,8 @@ check_toolchain
 
 MAKE="make -s"
 PKG_CONFIG_SYSROOT_DIR=$RFSDIR
-LD_LIBRARY_PATH=$DESTDIR/usr/lib:$RFSDIR/usr/lib:$RFSDIR/usr/lib/aarch64-linux-gnu
-PKG_CONFIG_PATH=$DESTDIR/usr/lib/pkgconfig:$RFSDIR/usr/lib/pkgconfig:$RFSDIR/usr/lib/aarch64-linux-gnu/pkgconfig:$RFSDIR/usr/share/pkgconfig
+LD_LIBRARY_PATH=$DESTDIR/usr/lib:$RFSDIR/usr/lib:$RFSDIR/usr/lib/$ARM_LINUX_GNU_TOOLCHAIN
+PKG_CONFIG_PATH=$DESTDIR/usr/lib/pkgconfig:$RFSDIR/usr/lib/pkgconfig:$RFSDIR/usr/lib/$ARM_LINUX_GNU_TOOLCHAIN/pkgconfig:$RFSDIR/usr/share/pkgconfig
 
 # Export common variables so they are accessible in .mk files.
 # Additional machine specific variables are exported in the machine configuration files

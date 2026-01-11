@@ -20,9 +20,9 @@ nnshark:
 	 sudo cp -rf $(DESTDIR)/usr/include/gpuperfcnt $(RFSDIR)/usr/include/ && \
 	 cd $(MLDIR)/nnshark && \
 	 sed -i 's/--exclude=gtkdocize//' autogen.sh && \
-	 ./autogen.sh --noconfigure --prefix=/usr --host=aarch64-linux-gnu && \
+	 ./autogen.sh --noconfigure --prefix=/usr --host=$ARM_LINUX_GNU_TOOLCHAIN && \
 	 ./configure CC="$(CROSS_COMPILE)gcc --sysroot=$(RFSDIR)" \
-	 	--host=aarch64-linux-gnu \
+		--host=$ARM_LINUX_GNU_TOOLCHAIN \
 		--disable-graphviz \
 		--disable-gtk-doc \
 		--prefix=/usr && \

@@ -27,7 +27,7 @@ imx_dsp:
 	     mv imx-dsp* imx_dsp && rm -f imx_dsp.bin; \
 	 fi && \
 	 cd imx_dsp && \
-	 ./configure CC=aarch64-linux-gnu-gcc \
+	 ./configure CC=$ARM_LINUX_GNU_TOOLCHAIN-gcc \
 	   --bindir=/unit_tests \
 	   -datadir=/lib/firmware \
 	   --enable-armv8 \

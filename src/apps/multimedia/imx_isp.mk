@@ -35,14 +35,14 @@ imx_isp:
 	 cd imx_isp/appshell && \
 	 sed -i '/v4l_drm_test/d' CMakeLists.txt && \
 	 sed -i 's/imx\///' display/DrmDisplay.cpp display/WlDisplay.cpp v4l_drm_test/video_test.cpp && \
-	 sudo ln -sf ../../lib/aarch64-linux-gnu/libjsoncpp.so $(RFSDIR)/usr/local/lib/libjsoncpp.so && \
+	 sudo ln -sf ../../lib/$(ARM_LINUX_GNU_TOOLCHAIN)/libjsoncpp.so $(RFSDIR)/usr/local/lib/libjsoncpp.so && \
 	 sudo cp -Pf $(DESTDIR)/usr/lib/libg2d*.so* $(RFSDIR)/usr/lib && \
 	 sudo cp -rf $(DESTDIR)/usr/include/linux $(RFSDIR)/usr/include/ && \
 	 mkdir -p build_$(DISTROTYPE)_$(ARCH) && cd build_$(DISTROTYPE)_$(ARCH) && \
 	 export CC="$(CROSS_COMPILE)gcc --sysroot=$(RFSDIR)" && \
 	 export CXX="$(CROSS_COMPILE)g++ --sysroot=$(RFSDIR)" && \
 	 cmake .. -G "Unix Makefiles" \
-		-DBOOST_LIBRARYDIR=$(RFSDIR)/usr/lib/aarch64-linux-gnu \
+		-DBOOST_LIBRARYDIR=$(RFSDIR)/usr/lib/$ARM_LINUX_GNU_TOOLCHAIN \
 		-DBoost_INCLUDE_DIR=$(RFSDIR)/usr/include \
 		-DSDKTARGETSYSROOT=$(RFSDIR) \
 		-DCMAKE_BUILD_TYPE=release \

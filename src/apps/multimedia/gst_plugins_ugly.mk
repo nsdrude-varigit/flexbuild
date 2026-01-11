@@ -21,7 +21,7 @@ ifeq ($(CONFIG_GST_PLUGINS_UGLY),y)
 	 fi && \
 	 meson setup build_$(DISTROTYPE)_$(ARCH) \
 		-Dc_args="-I$(RFSDIR)/usr/include/gstreamer-1.0 -I$(DESTDIR)/usr/include" \
-		-Dc_link_args="-L$(DESTDIR)/usr/lib -L$(RFSDIR)/usr/lib/aarch64-linux-gnu -ludev \
+		-Dc_link_args="-L$(DESTDIR)/usr/lib -L$(RFSDIR)/usr/lib/$ARM_LINUX_GNU_TOOLCHAIN -ludev \
 			-lpthread -lgstvideo-1.0 -lgstsdp-1.0" \
 		--prefix=/usr --buildtype=release \
 		--cross-file meson.cross \
