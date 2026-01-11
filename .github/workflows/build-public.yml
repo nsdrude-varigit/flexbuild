@@ -25,14 +25,7 @@ jobs:
     strategy:
       matrix:
         machine:
-          - imx8mm-var-dart
-          - imx8mp-var-dart
-          - imx8mn-var-som
-          - imx95-var-dart
-          - imx93-var-som
-          - imx8qxp-var-som
-          - imx91-var-som
-          - imx8mq-var-dart
+          - imx6ul-var-dart
         rootfs:
           - server
           - desktop

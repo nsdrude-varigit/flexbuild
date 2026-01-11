@@ -13,13 +13,7 @@ jobs:
     strategy:
       matrix:
         machine:
-          - imx8mm-var-dart
-          - imx8mp-var-dart
-          - imx8mn-var-som
-          - imx95-var-dart
-          - imx93-var-som
-          - imx8qxp-var-som
-          - imx8mq-var-dart
+          - imx6ul-var-dart
         rootfs:
           - desktop
     uses: varigit-dev/action-workflows/.github/workflows/flexbuild.yml@dev_flexbuild
