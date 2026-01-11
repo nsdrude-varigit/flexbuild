@@ -4,11 +4,12 @@
 
 # Unit tests for the i.MX BSP
 
+UTILS_IMX_TEST ?= true
 
 PLATFORM = IMX8
 
 imx_test:
-	@[ $(DESTARCH) != arm64 -o $(SOCFAMILY) != IMX -o $(DISTROVARIANT) != desktop ] && exit || \
+	@[ $(DESTARCH) != arm64 -o $(SOCFAMILY) != IMX -o $(DISTROVARIANT) != desktop -o $(UTILS_IMX_TEST) = false ] && exit || \
 	 $(call fbprint_b,"imx_test") && \
 	 $(call repo-mngr,fetch,imx_test,apps/utils) && \
 	 if [ ! -f $(DESTDIR)/usr/include/linux/mxc_asrc.h ]; then \

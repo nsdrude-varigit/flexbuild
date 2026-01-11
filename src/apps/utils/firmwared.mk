@@ -10,9 +10,10 @@
 
 # needed to load camera ap1302.fw for imx93evk
 
+UTILS_FIRMWARED ?= true
 
 firmwared:
-	@[ $(SOCFAMILY) != IMX -o $(DISTROVARIANT) = base -o $(DISTROVARIANT) = tiny ] && exit || \
+	@[ $(SOCFAMILY) != IMX -o $(DISTROVARIANT) = base -o $(DISTROVARIANT) = tiny -o $(UTILS_FIRMWARED) = false ] && exit || \
 	 $(call fbprint_b,"firmwared") && \
 	 $(call repo-mngr,fetch,firmwared,apps/utils) && \
 	 cd $(UTILSDIR)/firmwared && \
