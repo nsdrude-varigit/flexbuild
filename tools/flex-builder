@@ -370,6 +370,11 @@ create_recovery_sdcard_image_add_installer() {
 	# Copy bootloader and rootfs files to image directory
 	cp "$FLASH_BIN" "$ROOTFS_DIR/opt/images/Debian/${INSTALL_DEBIAN_TARGET_BOOT}"
 	cp "$ROOTFS_FILE" "$ROOTFS_DIR/opt/images/Debian/${INSTALL_DEBIAN_TARGET_ROOTFS}"
+
+	# Copy kernel image and kernel dtb files to image directory
+	curbrch=`cd $KERNEL_PATH && git branch | grep ^* | cut -d' ' -f2`
+	cp $KERNEL_OUTPUT_PATH/$curbrch/arch/arm/boot/zImage "$ROOTFS_DIR/opt/images/Debian/"
+	cp $KERNEL_OUTPUT_PATH/$curbrch/arch/arm/boot/dts/nxp/imx/imx6ul*var*.dtb "$ROOTFS_DIR/opt/images/Debian/"
 }
 
 create_recovery_sdcard_image() {
