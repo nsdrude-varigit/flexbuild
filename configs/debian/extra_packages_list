@@ -111,6 +111,8 @@ extra_server_devel_packages=" \
     libpulse-dev \
     libspeex-dev x264 \
     libtag1-dev \
+    libnl-3-dev \
+    libnl-route-3-dev \
 "
 
 extra_desktop_devel_packages=" \
