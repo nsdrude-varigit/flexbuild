@@ -26,7 +26,7 @@ RUN apt-get update && apt-get install -y \
         libnuma-dev libpcap-dev libtool mtd-utils libncurses5-dev libelf-dev net-tools   \
         libcunit1-dev pkg-config autotools-dev crossbuild-essential-armhf openssh-server \
         openssh-client crossbuild-essential-armhf qemu-utils kmod g++-aarch64-linux-gnu  \
-	cpp-arm-linux-gnueabihf dosfstools ruby iputils-ping cpio rsync libtclap-dev     \
+	cpp-arm-linux-gnueabihf dosfstools mtools ruby iputils-ping cpio rsync libtclap-dev     \
 	parted rpm2cpio lsb-release xutils-dev libwayland-bin cmake locales texinfo gawk \
 	chrpath diffstat scons libgflags-dev libhdf5-serial-dev python3-numpy python3-wheel \
 	python3-h5py
