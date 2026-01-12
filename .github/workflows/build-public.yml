@@ -193,5 +193,6 @@ jobs:
           path: |
             build_lsdk2412/images/var-recovery-image-${{ matrix.machine }}.img.zst
             build_lsdk2412/images/var-recovery-image-${{ matrix.machine }}.img.bmap
+            build_lsdk2412/images/rootfs_lsdk2412_debian_${{ matrix.rootfs }}_arm32.tar.zst
           if-no-files-found: error
           retention-days: 90
