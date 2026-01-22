@@ -416,6 +416,7 @@ repo:
 # connectivity component repositories
   nxp_wlan_bt:
     url:  https://github.com/nxp-imx/mwifiex.git
+    tag: lf-6.12.20-2.0.0
 
   meta_variscite_bsp_common:
     url: https://github.com/varigit/meta-variscite-bsp-common.git
