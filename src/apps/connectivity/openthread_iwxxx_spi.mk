@@ -13,9 +13,19 @@ openthread_iwxxx_spi:
 	SOURCE="$(PKGDIR)/apps/connectivity/openthread_iwxxx_spi" && \
 	mkdir -p $$SOURCE && \
 	cd $$SOURCE && \
-	if [ ! -f .patchdone ]; then \
-				git apply $(FBDIR)/patch/openthread_iwxxx_spi/*.patch && touch .patchdone; \
-	fi && \
+	( \
+		if [ ! -f .patchdone ]; then \
+			for p in $(FBDIR)/patch/openthread_iwxxx_spi/*.patch; do \
+				: # Skip 0062 patch for the imx9 family MACHINE \
+				if [ $${MACHINE:0:4} = imx9 ] && [ $$(basename $$p) = 0062-host-handle-power-save-mode-on-ssp-rxd.patch ]; then \
+					echo "Skipping $$p for $$MACHINE"; \
+					continue; \
+				fi; \
+				git apply $$p || exit 1; \
+			done; \
+			touch .patchdone; \
+		fi; \
+	) && \
 	export CC="$(CROSS_COMPILE)gcc --sysroot=$(RFSDIR)" && \
 	export CXX="$(CROSS_COMPILE)g++ --sysroot=$(RFSDIR)" && \
 	OT_OPT=" \
