@@ -410,7 +410,7 @@ repo:
     url:  https://github.com/nxp/imx-vpuwrap.git
 
   cheese:
-    url:  https://gitlab.gnome.org/GNOME/cheese.git
+    url:  https://gitlab.gnome.org/Archive/cheese.git
     tag:  43.0
 
 
