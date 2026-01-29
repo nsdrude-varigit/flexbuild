@@ -158,7 +158,7 @@ repo:
 
   openthread_iwxxx_spi:
     url: https://github.com/openthread/openthread.git
-    commit: 9681690fab100590566e4937cbf2d072de031ff3
+    commit: d31bcee81230bd82764838c76c9f291ba64814dd
 
   imx_sc_firmware:
     url: https://github.com/varigit/imx-sc-firmware.git
