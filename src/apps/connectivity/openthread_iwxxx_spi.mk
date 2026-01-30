@@ -26,6 +26,13 @@ openthread_iwxxx_spi:
 			touch .patchdone; \
 		fi; \
 	) && \
+	if [ ! -f $(DESTDIR)/usr/include/linux/spi/spidev.h ]; then \
+		bld linux-headers -r $(DISTROTYPE):$(DISTROVARIANT) -a $(DESTARCH); \
+	fi && \
+	# Prefer linux-headers UAPI over toolchain headers for SPI UAPI defines (e.g., SPI_MOSI_IDLE_LOW). \
+	export CFLAGS="$(CFLAGS) -isystem $(DESTDIR)/usr/include" && \
+	# Keep C++ in sync with C so the same UAPI headers are used. \
+	export CXXFLAGS="$(CXXFLAGS) -isystem $(DESTDIR)/usr/include" && \
 	export CC="$(CROSS_COMPILE)gcc --sysroot=$(RFSDIR)" && \
 	export CXX="$(CROSS_COMPILE)g++ --sysroot=$(RFSDIR)" && \
 	OT_OPT=" \
