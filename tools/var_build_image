@@ -11,12 +11,11 @@ SDK_CONFIG_FILE="sdk-var.yml"
 
 validate_distro() {
     case "$DISTRO" in
-        "debian:base"|"debian:server"|"debian:desktop")
+        "debian:server"|"debian:desktop")
             return 0
             ;;
         *)
             echo "Error: Unsupported distribution. Valid options are:"
-            echo "  - debian:base    (minimal Debian installation)"
             echo "  - debian:server  (Debian with server packages)"
             echo "  - debian:desktop (Debian with desktop environment)"
             return 1
@@ -107,7 +106,6 @@ show_usage() {
     echo "  --config    Specify custom config file (default: sdk-var.yml)"
     echo ""
     echo "Supported Debian distributions:"
-    echo "  debian:base    - Minimal Debian installation"
     echo "  debian:server  - Debian with server packages"
     echo "  debian:desktop - Debian with desktop environment"
     echo ""
