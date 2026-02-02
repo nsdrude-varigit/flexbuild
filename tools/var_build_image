@@ -100,7 +100,7 @@ cleanall() {
 }
 
 show_usage() {
-    echo "Usage: $SCRIPT_NAME <machine> <components> <distro> [options]"
+    echo "Usage: $SCRIPT_NAME <machine> <distro> <components> [options]"
     echo "Options:"
     echo "  --clean     Clean the specified distribution"
     echo "  --cleanall  Clean all build environments"
