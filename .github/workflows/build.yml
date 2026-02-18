@@ -11,6 +11,7 @@ concurrency:
 jobs:
   build-flexbuild:
     strategy:
+      fail-fast: false
       matrix:
         machine:
           - imx8mm-var-dart
