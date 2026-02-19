@@ -927,6 +927,24 @@ CONFIGLIST=.sdk.cfg
 export CONFIGLIST CFGLISTYML
 
 . $FBDIR/configs/$CONFIGLIST
+# Prefer env override; fall back to config default.
+[ -z "$KERNEL_PROVIDER" ] && KERNEL_PROVIDER=$KERNEL_PROVIDER_DEFAULT
+if [ -n "$KERNEL_PROVIDER" ]; then
+    kp=$(echo "$KERNEL_PROVIDER" | tr 'A-Z' 'a-z')
+    if [ "$kp" = "imx" ]; then
+        repo_linux_commit=$KERNEL_PROVIDER_IMX_COMMIT
+        LINUX_VERSION_EXTENSION=$KERNEL_PROVIDER_IMX_LINUX_VERSION_EXTENSION
+    else
+        # Keep behavior simple: any non-"imx" value defaults to fslc-imx.
+        kp=fslc-imx
+        repo_linux_commit=$KERNEL_PROVIDER_FSLC_COMMIT
+        LINUX_VERSION_EXTENSION=$KERNEL_PROVIDER_FSLC_LINUX_VERSION_EXTENSION
+    fi
+    export KERNEL_PROVIDER=$kp
+    # Rewrite parsed config so repo-mngr uses the selected commit/version suffix.
+    sed -i "s|^repo_linux_commit=.*|repo_linux_commit=\"$repo_linux_commit\"|" $FBDIR/configs/.sdk.cfg
+    sed -i "s|^LINUX_VERSION_EXTENSION=.*|LINUX_VERSION_EXTENSION=\"$LINUX_VERSION_EXTENSION\"|" $FBDIR/configs/.sdk.cfg
+fi
 . $FBDIR/tools/distro_debian
 . $FBDIR/tools/distro_poky
 . $FBDIR/tools/distro_buildroot

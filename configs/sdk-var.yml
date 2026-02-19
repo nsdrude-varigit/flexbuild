@@ -74,8 +74,18 @@ CONFIG_PYTORCH: y
 
 VARSOM: y
 
-# Linux kernel version
-LINUX_VERSION_EXTENSION: -var-lts-next
+# Kernel provider selection (env KERNEL_PROVIDER: imx or fslc-imx)
+# The provider-specific LINUX_VERSION_EXTENSION values make `uname -r` show
+# either "imx" or "fslc-imx".
+KERNEL_PROVIDER_DEFAULT: fslc-imx
+KERNEL_PROVIDER_IMX_COMMIT: "58f10b6fa35b031aa2f6ddf4311370eb273860e9"
+KERNEL_PROVIDER_FSLC_COMMIT: "652e08cace6402d2953faa911171d2420eb88886"
+# These suffixes are appended to the kernel version (CONFIG_LOCALVERSION).
+KERNEL_PROVIDER_IMX_LINUX_VERSION_EXTENSION: "-imx"
+KERNEL_PROVIDER_FSLC_LINUX_VERSION_EXTENSION: "-fslc-imx"
+
+# Linux kernel version (overridden by kernel provider selection)
+LINUX_VERSION_EXTENSION: -fslc-imx
 
 repo:
 
@@ -167,7 +177,7 @@ repo:
 # kernel and modules git repositories
   linux:
     url:  https://github.com/varigit/linux-imx.git
-    commit: 652e08cace6402d2953faa911171d2420eb88886
+    commit: "$KERNEL_PROVIDER_FSLC_COMMIT"
 
   cryptodev_linux:
     url:  https://github.com/cryptodev-linux/cryptodev-linux.git
