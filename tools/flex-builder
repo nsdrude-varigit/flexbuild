@@ -348,13 +348,13 @@ create_recovery_sdcard_image_add_installer() {
 	mkdir -p "$ROOTFS_DIR/usr/bin"
 	mkdir -p "$ROOTFS_DIR/opt/images/Debian"
 
-	# Download the installer script and helper, then make executable
-	curl -fsSL "$INSTALL_DEBIAN_SCRIPT" -o "$ROOTFS_DIR/usr/bin/install_debian.sh" || {
-		echo "Error: Failed to fetch installer script." >&2
+	# Copy the installer script and helper from a local checkout.
+	cp "$INSTALL_DEBIAN_SCRIPT" "$ROOTFS_DIR/usr/bin/install_debian.sh" || {
+		echo "Error: Failed to copy installer script." >&2
 		return 1
 	}
-	curl -fsSL "$INSTALL_DEBIAN_ECHOS" -o "$ROOTFS_DIR/usr/bin/echos.sh" || {
-		echo "Error: Failed to fetch echos script." >&2
+	cp "$INSTALL_DEBIAN_ECHOS" "$ROOTFS_DIR/usr/bin/echos.sh" || {
+		echo "Error: Failed to copy echos script." >&2
 		return 1
 	}
 	chmod +x "$ROOTFS_DIR/usr/bin/install_debian.sh"
@@ -372,6 +372,19 @@ create_recovery_sdcard_image_add_installer() {
 
 create_recovery_sdcard_image() {
 	. $FBDIR/configs/board/$MACHINE.conf
+	if [ -n "$repo_meta_variscite_sdk_imx_commit" ]; then
+		git_repo_checkout "$PKGDIR" meta_variscite_sdk_imx commit "$repo_meta_variscite_sdk_imx_commit" "$repo_meta_variscite_sdk_imx_url" || return 1
+	elif [ -n "$repo_meta_variscite_sdk_imx_tag" ]; then
+		git_repo_checkout "$PKGDIR" meta_variscite_sdk_imx tag "$repo_meta_variscite_sdk_imx_tag" "$repo_meta_variscite_sdk_imx_url" || return 1
+	elif [ -n "$repo_meta_variscite_sdk_imx_branch" ]; then
+		git_repo_checkout "$PKGDIR" meta_variscite_sdk_imx branch "$repo_meta_variscite_sdk_imx_branch" "$repo_meta_variscite_sdk_imx_url" || return 1
+	else
+		echo "Error: meta_variscite_sdk_imx repo ref is not specified in $CONFIGLIST." >&2
+		return 1
+	fi
+	INSTALLER_DIR="$PKGDIR/meta_variscite_sdk_imx/scripts/var_mk_yocto_sdcard/variscite_scripts"
+	INSTALL_DEBIAN_SCRIPT="$INSTALLER_DIR/mx8_install_yocto.sh"
+	INSTALL_DEBIAN_ECHOS="$INSTALLER_DIR/echos.sh"
 
 	# Get paths to input rootfs
 	ROOTFS_NAME="${RFSDIR##*/}"
