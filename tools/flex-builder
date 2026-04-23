@@ -365,6 +365,12 @@ create_recovery_sdcard_image_add_installer() {
 		return 1
 	fi
 
+	# Replace Yocto string with Debian in the installer script
+	if ! sed -i 's|Yocto|Debian|' "$ROOTFS_DIR/usr/bin/install_debian.sh"; then
+		echo "Error: Failed to update Yocto strings in install_debian.sh" >&2
+		return 1
+	fi
+
 	# Copy bootloader and rootfs files to image directory
 	cp "$FLASH_BIN" "$ROOTFS_DIR/opt/images/Debian/${INSTALL_DEBIAN_TARGET_BOOT}"
 	cp "$ROOTFS_FILE" "$ROOTFS_DIR/opt/images/Debian/${INSTALL_DEBIAN_TARGET_ROOTFS}"
