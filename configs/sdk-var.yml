@@ -434,7 +434,7 @@ repo:
 
   meta_variscite_bsp_imx:
     url: https://github.com/varigit/meta-variscite-bsp-imx.git
-    commit: 6d647083760105617381ede3ff264e2da878679d
+    commit: fc7c265e0cf02ea5243c4ae355822ca3e3494c4f
 
 # bsp components repositories
   freertos_variscite:
