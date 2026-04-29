@@ -447,7 +447,7 @@ repo:
 
   meta_variscite_sdk_imx:
     url: https://github.com/varigit/meta-variscite-sdk-imx.git
-    commit: 149a0c6a97a722c52f45bdb4bd04169af48f6c35
+    commit: d5b8caaca1268e832751b1cccb8d033f9322d2a0
 
 # generic component repositories
   imx_test:
