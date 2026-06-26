@@ -41,7 +41,7 @@ jobs:
         kernel_provider:
           - fslc-imx
         include:
-          - machine: imx8mp-var-dart
+          - machine: imx8mm-var-dart
             rootfs: desktop
             kernel_provider: imx
 
