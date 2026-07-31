@@ -16,6 +16,7 @@ mmdebstrap:
   mirrors:
     - http://ftp.cn.debian.org/debian
     - http://ftp.de.debian.org/debian
+    - 'deb http://deb.debian.org/debian bookworm-backports main'
   mode: unshare
   suite: bookworm
   target: rootfs

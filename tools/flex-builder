@@ -502,10 +502,16 @@ merge_apps() {
 merge_bootpart_rfs() {
     fbprint_n "Generating rootfs without boot partition..."
     generate_bootpartition
-    rm -rf $RFSDIR/lib/modules
     cp -r $bootpartdir/* $RFSDIR/boot/
     cp -r $RFSDIR/boot/firmware/* $RFSDIR/lib/firmware
-    cp -r $RFSDIR/boot/modules $RFSDIR/lib/modules
+    if [ "$KERNEL_SOURCE" = debian ]; then
+        # Keep package-managed Debian modules alongside the Variscite modules.
+        mkdir -p $RFSDIR/lib/modules
+        cp -r $RFSDIR/boot/modules/* $RFSDIR/lib/modules/
+    else
+        rm -rf $RFSDIR/lib/modules
+        cp -r $RFSDIR/boot/modules $RFSDIR/lib/modules
+    fi
     rm -r $RFSDIR/boot/firmware $RFSDIR/boot/modules
 
     # Run simple post rootfs commands
@@ -947,6 +953,17 @@ export CONFIGLIST CFGLISTYML
 
 . $FBDIR/configs/$CONFIGLIST
 # Prefer env override; fall back to config default.
+[ -z "$KERNEL_SOURCE" ] && KERNEL_SOURCE=${KERNEL_SOURCE_DEFAULT:-variscite}
+ks=$(echo "$KERNEL_SOURCE" | tr 'A-Z' 'a-z')
+case "$ks" in
+    variscite|debian)
+        KERNEL_SOURCE=$ks;;
+    *)
+        fbprint_e "invalid KERNEL_SOURCE: $KERNEL_SOURCE, valid values: variscite, debian" && exit 1;;
+esac
+export KERNEL_SOURCE
+
+# Prefer env override; fall back to config default.
 [ -z "$KERNEL_PROVIDER" ] && KERNEL_PROVIDER=$KERNEL_PROVIDER_DEFAULT
 if [ -n "$KERNEL_PROVIDER" ]; then
     kp=$(echo "$KERNEL_PROVIDER" | tr 'A-Z' 'a-z')
@@ -1207,6 +1224,7 @@ export ARCH DESTARCH CROSS_COMPILE FBDIR DESTDIR RFSDIR JOBS COMPONENT MACHINE K
        SOCFAMILY BL33TYPE DISTRIB_NAME SOCARCH COT DISTRIB_VERSION BOARD_VARIANTS \
        UBOOT_CONFIG CODENAME DISTRO_VERSION UBUNTU_VERSION FORCE LD_LIBRARY_PATH \
        PKG_CONFIG_SYSROOT_DIR PKG_CONFIG_PATH DEFAULT_REPO_TAG \
+       KERNEL_SOURCE DEBIAN_KERNEL_SUITE DEBIAN_KERNEL_PACKAGES \
        IMX_MKIMAGE_PATCHES IMX_MKIMAGE_TARGET IMX_MKIMAGE_DTBS CM_BOARD ENABLE_G2D \
        WESTON_RENDER BCM43XX_UTILS FREERTOS_SUPPORT CM_GCC FREERTOS_COMMIT CM_BUILD_TARGETS DEMO_LIST \
        IW612_UTILS DISABLE_CACHE_PATCH CM_DEMOS_DISABLE_CACHE SOC_REV CORTEXM_TOOLCHAIN_SUPPORT SCFW_SUPPORT

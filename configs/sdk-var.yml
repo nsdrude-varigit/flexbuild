@@ -74,6 +74,12 @@ CONFIG_PYTORCH: y
 
 VARSOM: y
 
+# Kernel boot selection (env KERNEL_SOURCE: variscite or debian).
+# Debian mode retains the source-built Variscite kernel and DTBs as a fallback.
+KERNEL_SOURCE_DEFAULT: variscite
+DEBIAN_KERNEL_SUITE: bookworm-backports
+DEBIAN_KERNEL_PACKAGES: "linux-image-arm64 linux-headers-arm64"
+
 # Kernel provider selection (env KERNEL_PROVIDER: imx or fslc-imx)
 # The provider-specific LINUX_VERSION_EXTENSION values make `uname -r` show
 # either "imx" or "fslc-imx".

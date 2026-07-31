@@ -30,8 +30,19 @@ generate_bootpartition() {
     [ -f $base_itb ] && cp -f $base_itb $bootpartdir
     kernelrelease=$(cat $KERNEL_OUTPUT_PATH/$curbrch/include/config/kernel.release)
     [ $DESTARCH = arm64 ] && kernelimg=Image* || kernelimg=zImage*
-    cp -f $FBOUTDIR/linux/kernel/$DESTARCH/$SOCFAMILY/{*.dtb,$kernelimg,config-$kernelrelease} $bootpartdir
+    cp -f $FBOUTDIR/linux/kernel/$DESTARCH/$SOCFAMILY/{*.dtb,config-$kernelrelease} $bootpartdir
     if [ $DESTARCH = arm64 ]; then
+	if [ "$KERNEL_SOURCE" = debian ]; then
+	    cp -f $FBOUTDIR/linux/kernel/$DESTARCH/$SOCFAMILY/Image $bootpartdir/Image-variscite
+	    debian_image=$(readlink $RFSDIR/boot/Image-debian)
+	    [ -n "$debian_image" -a -f "$RFSDIR/boot/$debian_image" ] || \
+	    { fbprint_e "Debian kernel image not found in $RFSDIR/boot"; exit 1; }
+	    cp -Pf $RFSDIR/boot/$debian_image $bootpartdir/$debian_image
+	    ln -sfn $debian_image $bootpartdir/Image-debian
+	    ln -sfn Image-debian $bootpartdir/Image
+	else
+	    cp -f $FBOUTDIR/linux/kernel/$DESTARCH/$SOCFAMILY/$kernelimg $bootpartdir
+	fi
 	cp -f $FBOUTDIR/linux/kernel/$DESTARCH/$SOCFAMILY/vmlinuz-$kernelrelease $bootpartdir
     elif [ $DESTARCH = arm32 ]; then
 	cp -f $FBOUTDIR/linux/kernel/$DESTARCH/$SOCFAMILY/uImage* $bootpartdir

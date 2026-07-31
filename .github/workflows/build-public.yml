@@ -39,10 +39,17 @@ jobs:
           - desktop
         kernel_provider:
           - fslc-imx
+        kernel_source:
+          - variscite
         include:
           - machine: imx8mm-var-dart
             rootfs: desktop
             kernel_provider: imx
+            kernel_source: variscite
+          - machine: imx8mp-var-dart
+            rootfs: desktop
+            kernel_provider: fslc-imx
+            kernel_source: debian
 
     steps:
       # GitHub-hosted runners expose additional space under /mnt.
@@ -88,6 +95,7 @@ jobs:
         run: |
           echo "Building ${{ matrix.machine }}:${{ matrix.rootfs }}"
           echo "Kernel provider: ${{ matrix.kernel_provider }}"
+          echo "Kernel source: ${{ matrix.kernel_source }}"
           echo "flexbuild reference: ${{ inputs['flexbuild-ref'] }}"
 
       ############################################################
@@ -149,62 +157,62 @@ jobs:
         run: |
           docker exec "$CONTAINER_NAME" /bin/bash -c '
             . setup.env || true
-            KERNEL_PROVIDER=${{ matrix.kernel_provider }} bld host-dep
+            KERNEL_PROVIDER=${{ matrix.kernel_provider }} KERNEL_SOURCE=${{ matrix.kernel_source }} bld host-dep
           '
 
       - name: Build U-Boot
         run: |
           docker exec "$CONTAINER_NAME" /bin/bash -c '
             . setup.env || true
-            KERNEL_PROVIDER=${{ matrix.kernel_provider }} bld -r debian:${{ matrix.rootfs }} -m ${{ matrix.machine }} -f sdk-var.yml uboot
+            KERNEL_PROVIDER=${{ matrix.kernel_provider }} KERNEL_SOURCE=${{ matrix.kernel_source }} bld -r debian:${{ matrix.rootfs }} -m ${{ matrix.machine }} -f sdk-var.yml uboot
           '
 
       - name: Build Linux
         run: |
           docker exec "$CONTAINER_NAME" /bin/bash -c '
             . setup.env || true
-            KERNEL_PROVIDER=${{ matrix.kernel_provider }} bld -r debian:${{ matrix.rootfs }} -m ${{ matrix.machine }} -f sdk-var.yml linux
+            KERNEL_PROVIDER=${{ matrix.kernel_provider }} KERNEL_SOURCE=${{ matrix.kernel_source }} bld -r debian:${{ matrix.rootfs }} -m ${{ matrix.machine }} -f sdk-var.yml linux
           '
 
       - name: Build root filesystem
         run: |
           docker exec "$CONTAINER_NAME" /bin/bash -c '
             . setup.env || true
-            KERNEL_PROVIDER=${{ matrix.kernel_provider }} bld -r debian:${{ matrix.rootfs }} -m ${{ matrix.machine }} -f sdk-var.yml rfs
+            KERNEL_PROVIDER=${{ matrix.kernel_provider }} KERNEL_SOURCE=${{ matrix.kernel_source }} bld -r debian:${{ matrix.rootfs }} -m ${{ matrix.machine }} -f sdk-var.yml rfs
           '
 
       - name: Build applications
         run: |
           docker exec "$CONTAINER_NAME" /bin/bash -c '
             . setup.env || true
-            KERNEL_PROVIDER=${{ matrix.kernel_provider }} bld -r debian:${{ matrix.rootfs }} -m ${{ matrix.machine }} -f sdk-var.yml apps
+            KERNEL_PROVIDER=${{ matrix.kernel_provider }} KERNEL_SOURCE=${{ matrix.kernel_source }} bld -r debian:${{ matrix.rootfs }} -m ${{ matrix.machine }} -f sdk-var.yml apps
           '
 
       - name: Merge applications into rootfs
         run: |
           docker exec "$CONTAINER_NAME" /bin/bash -c '
             . setup.env || true
-            KERNEL_PROVIDER=${{ matrix.kernel_provider }} bld -r debian:${{ matrix.rootfs }} -m ${{ matrix.machine }} -f sdk-var.yml merge-apps
+            KERNEL_PROVIDER=${{ matrix.kernel_provider }} KERNEL_SOURCE=${{ matrix.kernel_source }} bld -r debian:${{ matrix.rootfs }} -m ${{ matrix.machine }} -f sdk-var.yml merge-apps
           '
 
       - name: Merge boot partition and rootfs
         run: |
           docker exec "$CONTAINER_NAME" /bin/bash -c '
             . setup.env || true
-            KERNEL_PROVIDER=${{ matrix.kernel_provider }} bld -r debian:${{ matrix.rootfs }} -m ${{ matrix.machine }} -f sdk-var.yml merge-bootpart-rfs
+            KERNEL_PROVIDER=${{ matrix.kernel_provider }} KERNEL_SOURCE=${{ matrix.kernel_source }} bld -r debian:${{ matrix.rootfs }} -m ${{ matrix.machine }} -f sdk-var.yml merge-bootpart-rfs
           '
 
       - name: Create recovery SD-card image
         run: |
           docker exec "$CONTAINER_NAME" /bin/bash -c '
             . setup.env || true
-            KERNEL_PROVIDER=${{ matrix.kernel_provider }} bld -r debian:${{ matrix.rootfs }} -m ${{ matrix.machine }} -f sdk-var.yml create-recovery-sdcard-image
+            KERNEL_PROVIDER=${{ matrix.kernel_provider }} KERNEL_SOURCE=${{ matrix.kernel_source }} bld -r debian:${{ matrix.rootfs }} -m ${{ matrix.machine }} -f sdk-var.yml create-recovery-sdcard-image
           '
 
       - name: Upload packaged recovery image
         uses: actions/upload-artifact@v4
         with:
-          name: debian-bookworm-6.6.52_24.12-${{ matrix.machine }}-${{ matrix.rootfs }}-${{ matrix.kernel_provider }}-${{ steps.short-sha.outputs.value }}
+          name: debian-bookworm-6.6.52_24.12-${{ matrix.machine }}-${{ matrix.rootfs }}-${{ matrix.kernel_provider }}-${{ matrix.kernel_source }}-${{ steps.short-sha.outputs.value }}
           path: |
             build_lsdk2412/images/var-recovery-image-${{ matrix.machine }}.img.zst
             build_lsdk2412/images/var-recovery-image-${{ matrix.machine }}.img.bmap

@@ -97,6 +97,23 @@ Most used example with separate command:
  bld host-dep                    # automatically install the depended deb packages on host
 ```
 
+### Debian Backports Kernel for Variscite Boards
+
+The Variscite configuration can install Debian's Bookworm-backports arm64
+kernel alongside the source-built Variscite kernel and DTBs. The Debian kernel
+is selected by default, remains updatable through APT, and the Variscite kernel
+remains available as a fallback:
+
+```
+KERNEL_SOURCE=debian bld -m imx8mp-var-dart -f sdk-var.yml rfs
+KERNEL_SOURCE=debian bld -m imx8mp-var-dart -f sdk-var.yml merge-bootpart-rfs
+```
+
+The active kernel is `/boot/Image`. In Debian mode it links to
+`/boot/Image-debian`; the fallback is `/boot/Image-variscite`. See
+[`docs/flexbuild_usage.md`](docs/flexbuild_usage.md) for switching kernels on
+the target.
+
 ## More info
 ------------
 Please refer to https://nxp.com/nxpdebian for more information about NXP Debian Linux SDK Distribution for i.MX and Layerscape.

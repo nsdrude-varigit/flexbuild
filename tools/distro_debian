@@ -5,9 +5,32 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 
+install_debian_kernel() {
+    [ "$KERNEL_SOURCE" = debian ] || return 0
+    [ "$DESTARCH" = arm64 ] || { fbprint_e "KERNEL_SOURCE=debian requires arm64"; exit 1; }
+
+    $sudopt chroot $RFSDIR apt-get update
+    $sudopt mkdir -p $RFSDIR/etc/kernel/postinst.d
+    printf '%s\n' \
+        '#!/bin/sh' \
+        'set -eu' \
+        'image=$2' \
+        '[ -f "$image" ] || exit 0' \
+        'cd /boot' \
+        'ln -sfn "${image##*/}" Image-debian' | \
+        $sudopt tee $RFSDIR/etc/kernel/postinst.d/flexbuild-image-debian > /dev/null
+    $sudopt chmod 755 $RFSDIR/etc/kernel/postinst.d/flexbuild-image-debian
+    $sudopt chroot $RFSDIR apt-get install -t $DEBIAN_KERNEL_SUITE -y $DEBIAN_KERNEL_PACKAGES
+}
+
+
 build_distro_rfs_debian() {
-    [ $DISTROTYPE = debian -a -f $RFSDIR/etc/buildinfo ] && echo $RFSDIR already exists! && exit 0
     [ `whoami` = root ] && sudopt="" || sudopt=sudo
+    if [ $DISTROTYPE = debian -a -f $RFSDIR/etc/buildinfo ]; then
+        install_debian_kernel
+        echo $RFSDIR already exists!
+        return 0
+    fi
 
     echo generating $RFSDIR ... && cd $FBDIR
     test -c $RFSDIR/dev/pts/ptmx && $sudopt umount $RFSDIR/dev/pts
@@ -36,6 +59,8 @@ build_distro_rfs_debian() {
     fi
 
     [ -f $RFSDIR/etc/buildinfo ] || $sudopt rsync -aHAX $PKGDIR/${DEBIAN_CODENAME}_${DISTROVARIANT}_$DESTARCH/rootfs/* $RFSDIR
+
+    install_debian_kernel
 
     if [ $DISTROVARIANT = server -o $DISTROVARIANT = desktop ]; then
 	$sudopt chroot $RFSDIR apt-get update

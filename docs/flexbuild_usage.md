@@ -157,6 +157,31 @@ $ bld linux:linux-lts-nxp:lf-6.1.36
 $ bld linux:linux:LSDK-21.08
 ```
 
+## Debian Backports Kernel
+--------------------------
+The Variscite SDK can retain its source-built Variscite kernel and DTBs while
+installing Debian's Bookworm-backports arm64 kernel for normal APT updates:
+```
+$ KERNEL_SOURCE=debian bld -m imx8mp-var-dart -f sdk-var.yml rfs
+$ KERNEL_SOURCE=debian bld -m imx8mp-var-dart -f sdk-var.yml merge-bootpart-rfs
+```
+
+Debian mode installs `linux-image-arm64` and `linux-headers-arm64` from
+`bookworm-backports`. The source-built kernel remains available as
+`/boot/Image-variscite`; its configured `KERNEL_DEVICETREE` files remain in
+`/boot`. The package kernel is available through `/boot/Image-debian`, and
+`/boot/Image` selects the kernel U-Boot loads. A Debian kernel post-install
+hook updates `Image-debian` after APT upgrades.
+
+Assuming U-Boot follows symlinks, switch the selected kernel on the target:
+```
+# Use the source-built Variscite kernel
+ln -sfn Image-variscite /boot/Image
+
+# Use the Debian kernel
+ln -sfn Image-debian /boot/Image
+```
+
 To build a customized kernel image with menuconfig
 ```
 $ bld linux:menuconfig             # generate a customized .config by changing kernel options in menuconfig
