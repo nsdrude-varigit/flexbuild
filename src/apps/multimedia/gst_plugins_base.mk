@@ -59,7 +59,10 @@ gst_plugins_base:
 	      bld wayland_protocols -r $(DISTROTYPE):$(DISTROVARIANT) -a $(DESTARCH); \
 	 fi && \
 	 sudo cp -rf $(DESTDIR)/usr/share/{pkgconfig,wayland-protocols} $(RFSDIR)/usr/share/ && \
-	 sudo cp -fPa $(DESTDIR)/usr/lib/{libGAL.so,libdrm.so*,libdrm_vivante.so*,libg2d*.so*} $(RFSDIR)/usr/lib && \
+	 sudo cp -fPa $(DESTDIR)/usr/lib/{libGAL.so,libdrm.so*,libdrm_vivante.so*} $(RFSDIR)/usr/lib && \
+	 if [[ "${MACHINE}" != imx8qm* && "${MACHINE}" != imx8qxp* ]] || [ $(DISTROVARIANT) = desktop ]; then \
+	     sudo cp -fPa $(DESTDIR)/usr/lib/libg2d*.so* $(RFSDIR)/usr/lib; \
+	 fi && \
 	 sudo rm -f $(RFSDIR)/usr/lib/aarch64-linux-gnu/{libgstbase-1.0.so.0,libgstaudio-1.0.so.0,libgstvideo-1.0.so.0,libgsttag-1.0.so.0,libgstpbutils-1.0.so.0} && \
 	 sudo rm -f $(RFSDIR)/usr/lib/aarch64-linux-gnu/{libgstallocators-1.0.so.0,libgstreamer-1.0.so.0,libdrm.so.2} && \
 	 \
