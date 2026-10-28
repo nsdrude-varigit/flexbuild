@@ -349,7 +349,7 @@ create_recovery_sdcard_image_add_installer() {
 	mkdir -p "$ROOTFS_DIR/opt/images/Debian"
 
 	# Download the installer script and helper, then make executable
-	curl -fsSL "$INSTALL_DEBIAN_SCRIPT" -o "$ROOTFS_DIR/usr/bin/install_debian.sh" || {
+	curl -fsSL "$INSTALL_DEBIAN_SCRIPT" -o "$ROOTFS_DIR/usr/sbin/install_debian.sh" || {
 		echo "Error: Failed to fetch installer script." >&2
 		return 1
 	}
@@ -357,16 +357,16 @@ create_recovery_sdcard_image_add_installer() {
 		echo "Error: Failed to fetch echos script." >&2
 		return 1
 	}
-	chmod +x "$ROOTFS_DIR/usr/bin/install_debian.sh"
+	chmod +x "$ROOTFS_DIR/usr/sbin/install_debian.sh"
 
 	# Replace Yocto path with Debian in the installer script
-	if ! sed -i 's|^IMGS_PATH=/opt/images/Yocto|IMGS_PATH=/opt/images/Debian|' "$ROOTFS_DIR/usr/bin/install_debian.sh"; then
+	if ! sed -i 's|^IMGS_PATH=/opt/images/Yocto|IMGS_PATH=/opt/images/Debian|' "$ROOTFS_DIR/usr/sbin/install_debian.sh"; then
 		echo "Error: Failed to update IMGS_PATH in install_debian.sh" >&2
 		return 1
 	fi
 
 	# Replace Yocto string with Debian in the installer script
-	if ! sed -i 's|Yocto|Debian|' "$ROOTFS_DIR/usr/bin/install_debian.sh"; then
+	if ! sed -i 's|Yocto|Debian|' "$ROOTFS_DIR/usr/sbin/install_debian.sh"; then
 		echo "Error: Failed to update Yocto strings in install_debian.sh" >&2
 		return 1
 	fi
