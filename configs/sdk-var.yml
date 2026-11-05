@@ -323,7 +323,7 @@ repo:
 
   sm:
     url: https://github.com/varigit/imx-sm.git
-    commit: a2a6857910ab15be3fe00990595e0dce3579e442
+    commit: c3bc48c425a59629d8618b566d2a213e36f1eaa7
 
   oei:
     url: https://github.com/varigit/imx-oei.git
