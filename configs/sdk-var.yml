@@ -430,7 +430,7 @@ repo:
 # bsp components repositories
   freertos_variscite:
     url: https://github.com/varigit/freertos-variscite.git
-    commit: a8756e7ba6f764bee95ed2c1b769ca17142ef848
+    commit: 3b273b3ba7fade52fe6812f43aa8209ea2c48d74
 
   meta_variscite_sdk_common:
     url: https://github.com/varigit/meta-variscite-sdk-common.git
